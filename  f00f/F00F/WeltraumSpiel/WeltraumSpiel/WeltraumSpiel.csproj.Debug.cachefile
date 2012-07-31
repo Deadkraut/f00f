@@ -1,0 +1,22 @@
+Content\Models\target.xnb
+Content\Models\xwing.xnb
+Content\Models\Skybox\skybox.xnb
+Content\Models\Skybox\Textures\skybox_back.xnb
+Content\Models\Skybox\Textures\skybox_bottom.xnb
+Content\Models\Skybox\Textures\skybox_front 2.xnb
+Content\Models\Skybox\Textures\skybox_front.xnb
+Content\Models\Skybox\Textures\skybox_left.xnb
+Content\Models\Skybox\Textures\skybox_right.xnb
+Content\Models\Skybox\Textures\skybox_top.xnb
+Content\Textures\bullet1.xnb
+Content\Textures\bullet2.xnb
+Content\Textures\healthBar.xnb
+Content\Textures\intro.xnb
+Content\Textures\TitleScreen.xnb
+Content\Effects\effects.xnb
+Content\Models\Skybox\Textures\SkyBox_Top_0.xnb
+Content\Models\Skybox\Textures\SkyBox_Right_0.xnb
+Content\Models\Skybox\Textures\SkyBox_Left_0.xnb
+Content\Models\Skybox\Textures\SkyBox_Front_0.xnb
+Content\Models\Skybox\Textures\SkyBox_Back_0.xnb
+Content\Models\Skybox\Textures\SkyBox_Bottom_0.xnb

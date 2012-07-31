@@ -1,0 +1,24 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeltraumSpiel", "WeltraumSpiel\WeltraumSpiel\WeltraumSpiel.csproj", "{06E794F8-FF44-43F1-AF9D-EE64C9BBAAC2}"
+EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "WeltraumSpielContent", "WeltraumSpiel\WeltraumSpielContent\WeltraumSpielContent.contentproj", "{3299BA4A-594F-4D75-81C6-00E754C83176}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{06E794F8-FF44-43F1-AF9D-EE64C9BBAAC2}.Debug|x86.ActiveCfg = Debug|x86
+		{06E794F8-FF44-43F1-AF9D-EE64C9BBAAC2}.Debug|x86.Build.0 = Debug|x86
+		{06E794F8-FF44-43F1-AF9D-EE64C9BBAAC2}.Release|x86.ActiveCfg = Release|x86
+		{06E794F8-FF44-43F1-AF9D-EE64C9BBAAC2}.Release|x86.Build.0 = Release|x86
+		{3299BA4A-594F-4D75-81C6-00E754C83176}.Debug|x86.ActiveCfg = Debug|x86
+		{3299BA4A-594F-4D75-81C6-00E754C83176}.Release|x86.ActiveCfg = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
