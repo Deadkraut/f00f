@@ -1,3 +1,29 @@
+/*
+ *                                  ::::Chancelog::::
+ * Das hier ist eine WeltraumSpiel den dem man mit einem Raumgleiter eine Mission erfüllen muss.
+ * 
+ * Version: 1.0
+ * author: 
+ * Wir haben das Tutorial von der Seite http://www.riemers.net/eng/Tutorials/XNA/Csharp/series2.php Durchgearbeitet
+ * 
+ * @version: 1.1
+ * @author: Alexander Stoldt
+ * 
+ * Ich habe mit Hilfe des Tutorials auf der Seite http://www.xnadevelopment.com/tutorials/notsohealthy/NotSoHealthy.shtml
+ * eine Lebensanzeig für unseren Raumgleiter intigriert. Dazu die Methode healtbar eingefügt.
+ * Außerdem habe ich mit diesem Tutorial http://www.xnamag.de/article.php?aid=16 in eine GameComponent integriet
+ * 
+ * @version: 1.2 (TODO)
+ * @author: Alexander Stoldt
+ * Ich habe ein paar Bugs beseitigt und unnötigen Code gelöscht. Außerdem habe ich ein GameOver eingeführt
+ * 
+ * @version: 1.3 (TODO)
+ * @author: Alexander Stoldt
+ * Ich habe damit angefangen eine Menue zu implementieren. Dazu habe ich genutzt http://www.xnadevelopment.com/tutorials/thestateofthings/thestateofthings.shtml
+ * und hiervon das 3 Bsp:
+ * 
+ * 
+ */
 using System;
 using System.Collections.Generic;
 using System.Linq;
