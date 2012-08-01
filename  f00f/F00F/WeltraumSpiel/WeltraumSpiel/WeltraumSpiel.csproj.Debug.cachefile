@@ -20,3 +20,6 @@ Content\Models\Skybox\Textures\SkyBox_Left_0.xnb
 Content\Models\Skybox\Textures\SkyBox_Front_0.xnb
 Content\Models\Skybox\Textures\SkyBox_Back_0.xnb
 Content\Models\Skybox\Textures\SkyBox_Bottom_0.xnb
+Content\Fonts\blank.xnb
+Content\Fonts\gamefont.xnb
+Content\Fonts\menufont.xnb

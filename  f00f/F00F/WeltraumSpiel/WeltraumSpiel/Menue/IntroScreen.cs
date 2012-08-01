@@ -19,9 +19,9 @@ using Microsoft.Xna.Framework.Media;
 
 
 
-namespace WeltraumSpiel.Menue
+namespace WeltraumSpiel
 {
-    class IntroScreen : Screen
+    class IntroScreen : MenuScreen
     {
         //Background texture for the screen
         Texture2D introScreenBackground;

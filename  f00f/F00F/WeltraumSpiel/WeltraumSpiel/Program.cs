@@ -1,3 +1,12 @@
+#region ::::Chancelog::::
+/*
+ * Program.cs
+ * 
+ * Hierüber wird das Spiel dann gestartet
+ * @author: 
+ * @version: 1.0
+ */
+#endregion
 using System;
 
 namespace WeltraumSpiel

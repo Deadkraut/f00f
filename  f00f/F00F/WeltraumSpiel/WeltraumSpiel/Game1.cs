@@ -1,5 +1,6 @@
+#region ::::Chancelog::::
 /*
- *                                  ::::Chancelog::::
+ * game.cs
  * Das hier ist eine WeltraumSpiel den dem man mit einem Raumgleiter eine Mission erfüllen muss.
  * 
  * Version: 1.0
@@ -24,6 +25,9 @@
  * 
  * 
  */
+
+#endregion
+#region Using Statements
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,6 +38,7 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+#endregion
 
 namespace WeltraumSpiel
 {
@@ -44,7 +49,7 @@ namespace WeltraumSpiel
     {
         #region Enumerations & Structs
 
-        enum CollisionType { None, Building, Boundary, Target }
+        enum CollisionType { None, Boundary, Target }
 
         struct Bullet
         {
@@ -57,9 +62,10 @@ namespace WeltraumSpiel
         #region Screens
 
         //The screens and the current screen
-        Menue.IntroScreen introScreen; // Greift auf IntroScreen im Ordner Menue zu
-        Menue.MainScreen mainScreen;   // Greift auf MainScreen im Ordner Menue zu
-        Menue.Screen currentScreen;    // Gibt den Aktuelen Screen an
+        IntroScreen introScreen; // Greift auf IntroScreen im Ordner Menue zu
+        MainMenuScreen mainScreen;   // Greift auf MainScreen im Ordner Menue zu
+        MenuScreen currentScreen;    // Gibt den Aktuelen Screen an
+
 
         #endregion
 
@@ -157,8 +163,8 @@ namespace WeltraumSpiel
             skyboxModel = LoadModel(@"Models\Skybox\skybox", out skyboxTextures);
 
             //Initialize the various screens in the game
-            introScreen = new Menue.IntroScreen(this.Content, new EventHandler(introScreenEvent));
-            mainScreen = new Menue.MainScreen(this.Content, new EventHandler(mainScreenEvent));
+            introScreen = new IntroScreen(this.Content, new EventHandler(introScreenEvent));
+            mainScreen = new MainMenuScreen(this.Content, new EventHandler(mainScreenEvent));
             currentScreen = introScreen;
 
             AddTargets();
@@ -229,6 +235,12 @@ namespace WeltraumSpiel
 
         #region Screen Management
 
+        //Bringt das Spiel wieder zurück zum Hauptmenue
+        public void gameScreenEvent(EventArgs e)
+        {
+            currentScreen = mainScreen;
+        }
+
         //This event fires when the Controller detect screen is returning control back to the main game class
         //Überstetzen
         public void introScreenEvent(object obj, EventArgs e)
@@ -241,7 +253,7 @@ namespace WeltraumSpiel
         public void mainScreenEvent(object obj, EventArgs e)
         {
             //Switch to the controller detect screen, the Title screen is finished being displayed
-            currentScreen = introScreen;
+            //currentScreen = gameScreen;
         }
 
         #endregion
