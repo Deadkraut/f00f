@@ -108,9 +108,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Healthbar.cs" />
+    <Compile Include="MenueManager\GameScreen.cs" />
+    <Compile Include="MenueManager\InputState.cs" />
+    <Compile Include="MenueManager\ScreenManager.cs" />
     <Compile Include="Menue\IntroScreen.cs" />
-    <Compile Include="Menue\MainScreen.cs" />
-    <Compile Include="Menue\Screen.cs" />
+    <Compile Include="Menue\MainMenuScreen.cs" />
+    <Compile Include="Menue\MenuScreen.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Game1.cs" />
