@@ -59,16 +59,6 @@ namespace WeltraumSpiel
 
         #endregion
 
-        #region Screens
-
-        //The screens and the current screen
-        IntroScreen introScreen; // Greift auf IntroScreen im Ordner Menue zu
-        MainMenuScreen mainScreen;   // Greift auf MainScreen im Ordner Menue zu
-        MenuScreen currentScreen;    // Gibt den Aktuelen Screen an
-
-
-        #endregion
-
         #region Constants
 
         const int screenWidth = 800;
@@ -162,11 +152,6 @@ namespace WeltraumSpiel
             bulletTexture = Content.Load<Texture2D>(@"Textures\bullet1");
             skyboxModel = LoadModel(@"Models\Skybox\skybox", out skyboxTextures);
 
-            //Initialize the various screens in the game
-            introScreen = new IntroScreen(this.Content, new EventHandler(introScreenEvent));
-            mainScreen = new MainMenuScreen(this.Content, new EventHandler(mainScreenEvent));
-            currentScreen = introScreen;
-
             AddTargets();
           
         }
@@ -233,30 +218,7 @@ namespace WeltraumSpiel
 
         #endregion
 
-        #region Screen Management
-
-        //Bringt das Spiel wieder zurück zum Hauptmenue
-        public void gameScreenEvent(EventArgs e)
-        {
-            currentScreen = mainScreen;
-        }
-
-        //This event fires when the Controller detect screen is returning control back to the main game class
-        //Überstetzen
-        public void introScreenEvent(object obj, EventArgs e)
-        {
-            currentScreen = mainScreen;
-        }
-
-        //This event is fired when the Title screen is returning control back to the main game class
-        //Überstetzen
-        public void mainScreenEvent(object obj, EventArgs e)
-        {
-            //Switch to the controller detect screen, the Title screen is finished being displayed
-            //currentScreen = gameScreen;
-        }
-
-        #endregion
+        
 
         public void healthbarDow()
         {
@@ -313,9 +275,6 @@ namespace WeltraumSpiel
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
-            //By taking advantage of Polymorphism, we can call update on the current screen class, 
-            //but the Update in the subclass is the one that will be executed.
-            currentScreen.update(gameTime);
 
             ProcessKeyboard(gameTime);
             float moveSpeed = gameTime.ElapsedGameTime.Milliseconds / 500.0f * gameSpeed;
@@ -392,12 +351,6 @@ namespace WeltraumSpiel
             // TODO: Add your drawing code here
             device.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.DarkSlateBlue, 1.0f, 0);
 
-            spriteBatch.Begin();
-            //Again, using Polymorphism, we can call draw on teh current screen class
-            //and the Draw in the subclass is the one that will be executed.
-            currentScreen.Draw(spriteBatch);
-
-            spriteBatch.End();
 
             DrawSkybox();
             DrawModel();
