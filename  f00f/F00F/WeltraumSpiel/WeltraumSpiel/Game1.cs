@@ -1,11 +1,11 @@
 #region ::::Chancelog::::
 /*
- * game.cs
- * Das hier ist eine WeltraumSpiel den dem man mit einem Raumgleiter eine Mission erfüllen muss.
+ * Game1.cs
+ * Das hier ist ein WeltraumSpiel in dem man mit einem Raumgleiter eine Mission erfüllen muss.
  * 
  * Version: 1.0
- * author: 
- * Wir haben das Tutorial von der Seite http://www.riemers.net/eng/Tutorials/XNA/Csharp/series2.php Durchgearbeitet
+ * author: Mikael Wolff, Alexander Stoldt, Marcel Abel
+ * Wir haben das Tutorial von der Seite http://www.riemers.net/eng/Tutorials/XNA/Csharp/series2.php durchgearbeitet
  * 
  * @version: 1.1
  * @author: Alexander Stoldt
@@ -23,6 +23,13 @@
  * Ich habe damit angefangen eine Menue zu implementieren. Dazu habe ich genutzt http://www.xnadevelopment.com/tutorials/thestateofthings/thestateofthings.shtml
  * und hiervon das 3 Bsp:
  * 
+ * @version: 1.4
+ * @author: Marcel Abel
+ * Ich habe eine Lebendauer für unsere Geschosse (die Bullets) implementiert und eine BoundaryBox eingefügt, die den Missionsbereich begrenzt und
+ * in der die Ziele (targets) erzeugt werden. 
+ * Die BoundaryBox wird in der Methode AddBoundaryBox() erzeugt, dazu wird zusätzlich das Feld dimension benötigt, um die Dimension der Box festzulegen.
+ * Die Bullets verfügen nun über ein Feld persistence, in das die aktuelle GameTime gespeichert wird. Nach ca. 10 Sekunden werden die Bullets mittels einer If-Abfrage
+ * in der Methode UpdateBulletPositions() aus der bulletList entfernt.
  * 
  */
 
@@ -55,6 +62,7 @@ namespace WeltraumSpiel
         {
             public Vector3 position;
             public Quaternion rotation;
+            public double persistence;
         }
 
         #endregion
@@ -64,6 +72,7 @@ namespace WeltraumSpiel
         const int screenWidth = 800;
         const int screenHeigth = 600;
         const int maxTargets = 500;
+        const float dimension = 500; // Dimension der BoundaryBox
 
         #endregion
 
@@ -89,6 +98,8 @@ namespace WeltraumSpiel
         List<BoundingSphere> targetList = new List<BoundingSphere>(); Texture2D bulletTexture;
 
         List<Bullet> bulletList = new List<Bullet>(); double lastBulletTime = 0;
+
+        BoundingBox boundaryBox; // Box, die den Missionsbereich eingrenzt
 
         Quaternion xwingRotation = Quaternion.Identity;
         Quaternion cameraRotation = Quaternion.Identity;
@@ -152,6 +163,7 @@ namespace WeltraumSpiel
             bulletTexture = Content.Load<Texture2D>(@"Textures\bullet1");
             skyboxModel = LoadModel(@"Models\Skybox\skybox", out skyboxTextures);
 
+            AddBoundaryBox();
             AddTargets();
           
         }
@@ -182,17 +194,36 @@ namespace WeltraumSpiel
             return newModel;
         }
 
+        private void AddBoundaryBox()
+        {
+            Vector3[] boundaryPoints = new Vector3[8];
+            boundaryPoints[0] = new Vector3(1, 1, 1) * dimension;
+            boundaryPoints[1] = new Vector3(-1, 1, 1) * dimension;
+            boundaryPoints[2] = new Vector3(-1, 1, -1) * dimension;
+            boundaryPoints[3] = new Vector3(1, -1, -1) * dimension;
+            boundaryPoints[4] = new Vector3(1, -1, 1) * dimension;
+            boundaryPoints[5] = new Vector3(-1, -1, 1) * dimension;
+            boundaryPoints[6] = new Vector3(1, 1, -1) * dimension;
+            boundaryPoints[7] = new Vector3(-1, -1, -1) * dimension;
+
+            //Vector3[] boundaryPoints = new Vector3[2];
+            //boundaryPoints[0] = new Vector3(1, 1, 1) * -dimension; // minValue
+            //boundaryPoints[1] = new Vector3(1, 1, 1) * dimension; // maxValue
+
+            boundaryBox = BoundingBox.CreateFromPoints(boundaryPoints);
+        }
+
         private void AddTargets()
         {
-            int cityWidth = screenWidth;
-            int cityLength = screenHeigth;
+            int boundaryWidth = (int) dimension;
+            int boundaryLength = (int) dimension;
 
             Random random = new Random();
 
             while (targetList.Count < maxTargets)
             {
-                int x = random.Next(cityWidth);
-                int z = -random.Next(cityLength);
+                int x = random.Next(boundaryWidth);
+                int z = -random.Next(boundaryLength);
                 float y = (float)random.Next(2000) / 1000f + 1;
                 float radius = (float)random.Next(1000) / 1000f * 0.2f + 0.01f;
 
@@ -236,17 +267,21 @@ namespace WeltraumSpiel
 
         #region Collision
 
+        /// <summary>
+        /// This function checks, if there's any collision with the
+        /// passed BoundingSphere and the BoundaryBox or any target in
+        /// the targetList and returns the accordingly CollisionType.
+        /// </summary>
+        /// <param name="sphere">Contains a BoundingSphere.</param>
         private CollisionType CheckCollision(BoundingSphere sphere)
         {
-            //for (int i = 0; i < buildingBoundingBoxes.Length; i++)
-            //    if (buildingBoundingBoxes[i].Contains(sphere) != ContainmentType.Disjoint)
-            //        return CollisionType.Building;
+            // Überprüfe, ob sich die BoundingSphere außerhalb der BoundaryBox befindet
+            if (boundaryBox.Contains(sphere) != ContainmentType.Contains)
+            {
+                return CollisionType.Boundary;
+            }
 
-            //if (completeCityBox.Contains(sphere) != ContainmentType.Contains)
-            //{
-            //    return CollisionType.Boundary;
-            //}
-
+            // Überprüfe für jedes Ziel in der targetList, ob eine Kollision mit der BoundingSphere vorliegt
             for (int i = 0; i < targetList.Count; i++)
             {
                 if (targetList[i].Contains(sphere) != ContainmentType.Disjoint)
@@ -259,6 +294,7 @@ namespace WeltraumSpiel
                 }
             }
 
+            // Es liegt keine Kollision vor
             return CollisionType.None;
         }
 
@@ -284,35 +320,47 @@ namespace WeltraumSpiel
             BoundingSphere xwingSpere = new BoundingSphere(xwingPosition, 0.04f);
             if (CheckCollision(xwingSpere) == CollisionType.Target)
             {
-                xwingPosition = new Vector3(8, 1, -3);
-                //xwingRotation = Quaternion.Identity;
                 gameSpeed /= 1.1f;
                 healthbarDow();
             }
+            if (CheckCollision(xwingSpere) == CollisionType.Boundary)
+            {
+                xwingPosition = new Vector3(8, 1, -3);
+                xwingRotation = Quaternion.Identity;
+            }
 
             UpdateCamera();
-            UpdateBulletPositions(moveSpeed);
+            UpdateBulletPositions(gameTime, moveSpeed);
             base.Update(gameTime);
 
         }
 
-        private void UpdateBulletPositions(float moveSpeed)
+        private void UpdateBulletPositions(GameTime gameTime, float moveSpeed)
         {
+            double currentTime = gameTime.TotalGameTime.TotalMilliseconds;
             for (int i = 0; i < bulletList.Count; i++)
             {
                 Bullet currentBullet = bulletList[i];
-                MoveForward(ref currentBullet.position, currentBullet.rotation, moveSpeed * 2.0f);
-                bulletList[i] = currentBullet;
-
-                BoundingSphere bulletSphere = new BoundingSphere(currentBullet.position, 0.05f);
-                CollisionType colType = CheckCollision(bulletSphere);
-                if (colType != CollisionType.None)
+                if (currentTime - currentBullet.persistence > 10000)
                 {
                     bulletList.RemoveAt(i);
                     i--;
+                }
+                else
+                {
+                    MoveForward(ref currentBullet.position, currentBullet.rotation, moveSpeed * 2.0f);
+                    bulletList[i] = currentBullet;
 
-                    if (colType == CollisionType.Target)
-                        gameSpeed *= 1.05f;
+                    BoundingSphere bulletSphere = new BoundingSphere(currentBullet.position, 0.05f);
+                    CollisionType colType = CheckCollision(bulletSphere);
+                    if (colType != CollisionType.None)
+                    {
+                        bulletList.RemoveAt(i);
+                        i--;
+
+                        if (colType == CollisionType.Target)
+                            gameSpeed *= 1.05f;
+                    }
                 }
             }
         }
@@ -519,6 +567,7 @@ namespace WeltraumSpiel
                     Bullet newBullet = new Bullet();
                     newBullet.position = xwingPosition;
                     newBullet.rotation = xwingRotation;
+                    newBullet.persistence = currentTime; //Lebenszeit initialisieren
                     bulletList.Add(newBullet);
 
                     lastBulletTime = currentTime;
