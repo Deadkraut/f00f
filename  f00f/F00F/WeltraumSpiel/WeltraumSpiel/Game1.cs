@@ -14,9 +14,9 @@
  * eine Lebensanzeig für unseren Raumgleiter intigriert. Dazu die Methode healtbar eingefügt.
  * Außerdem habe ich mit diesem Tutorial http://www.xnamag.de/article.php?aid=16 in eine GameComponent integriet
  * 
- * @version: 1.2 (TODO)
+ * @version: 1.2 (Beobachten)
  * @author: Alexander Stoldt
- * Ich habe ein paar Bugs beseitigt und unnötigen Code gelöscht. Außerdem habe ich ein GameOver eingeführt
+ * Ich habe ein paar Bugs bei der healthbar beseitigt und unnötigen Code gelöscht. Außerdem habe ich ein GameOver eingeführt
  * 
  * @version: 1.3 (TODO)
  * @author: Alexander Stoldt
@@ -321,6 +321,7 @@ namespace WeltraumSpiel
             if (CheckCollision(xwingSpere) == CollisionType.Target)
             {
                 gameSpeed /= 1.1f;
+                healthbarCon = 1;       //Dient als Kontrolle für die Methode healthbarDow()
                 healthbarDow();
             }
             if (CheckCollision(xwingSpere) == CollisionType.Boundary)
