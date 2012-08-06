@@ -12,8 +12,13 @@ Content\Textures\bullet1.xnb
 Content\Textures\bullet2.xnb
 Content\Textures\healthBar.xnb
 Content\Textures\intro.xnb
-Content\Textures\TitleScreen.xnb
+Content\Fonts\blank.xnb
+Content\Textures\background.xnb
+Content\Fonts\gradient.xnb
+Content\Textures\backgroundLoad.xnb
 Content\Effects\effects.xnb
+Content\Fonts\gamefont.xnb
+Content\Fonts\menufont.xnb
 Content\Models\Skybox\Textures\SkyBox_Top_0.xnb
 Content\Models\Skybox\Textures\SkyBox_Right_0.xnb
 Content\Models\Skybox\Textures\SkyBox_Left_0.xnb
