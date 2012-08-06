@@ -34,7 +34,7 @@ namespace WeltraumSpiel
 
         SpriteBatch mbatch;
         Texture2D mHealthBar;
-        Game1 game;
+        WeltraumSpiel game;
 
         int punktabzug = 0;
 
@@ -52,7 +52,8 @@ namespace WeltraumSpiel
 
         #region Initialization
 
-        public Healthbar(Game1 game) : base(game)
+        public Healthbar(WeltraumSpiel game)
+            : base(game)
         {
             // TODO: Konstruieren Sie untergeordnete Komponenten hier
             this.game = game;
