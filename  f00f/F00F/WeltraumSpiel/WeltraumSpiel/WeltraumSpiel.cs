@@ -1,4 +1,4 @@
-#region ::::Chancelog::::
+#region ::::Changelog::::
 /*
  * Game1.cs
  * Das hier ist ein WeltraumSpiel in dem man mit einem Raumgleiter eine Mission erfüllen muss.
@@ -30,6 +30,17 @@
  * Die BoundaryBox wird in der Methode AddBoundaryBox() erzeugt, dazu wird zusätzlich das Feld dimension benötigt, um die Dimension der Box festzulegen.
  * Die Bullets verfügen nun über ein Feld persistence, in das die aktuelle GameTime gespeichert wird. Nach ca. 10 Sekunden werden die Bullets mittels einer If-Abfrage
  * in der Methode UpdateBulletPositions() aus der bulletList entfernt.
+ * 
+ * @version: 1.5
+ * @author: Mikael Wolff
+ * Ich habe das Modell des Schiffes durch ein eigenes ersetzt und die Lademethode entsprechend angepasst.
+ * Die Steuerung wurde verändert und sieht nun folgendermaßen aus:
+ * W/S - Das Schiff wird entweder nach unten oder nach oben geneigt.
+ * A/D - Das Schiff dreht sich entweder nach links oder nach rechts.
+ * Q/E - Das Schiff dreht sich um seine Längsachse.
+ * Shift(links) - Das Schiff fliegt mit doppelter Geschwindigkeit.
+ * Geschossen wurde ein Soundeffekt beigefügt.
+ * 
  * 
  */
 

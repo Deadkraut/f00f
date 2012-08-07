@@ -1,4 +1,4 @@
-﻿#region ::::Chancelog::::
+﻿#region ::::Changelog::::
 /*
  * PlayerIndexEventArgs.cs
  * 

@@ -1,4 +1,4 @@
-﻿#region ::::Chancelog::::
+﻿#region ::::Changelog::::
 /*
  *GameplayScreen.cs
  * 
@@ -54,7 +54,7 @@ namespace WeltraumSpiel
         //SpriteBatch mbatch; //Zeichnet die Lebenleist
         Effect effect;
 
-        Model xwingModel;
+        Model ship;
         Model skyboxModel;
         Model targetModel;
 
@@ -112,7 +112,7 @@ namespace WeltraumSpiel
                 Content = new ContentManager(ScreenManager.Game.Services, "Content");
 
             effect = Content.Load<Effect>(@"Effects\effects");
-            xwingModel = LoadModel(@"Models\xwing");
+            ship = Content.Load<Model>(@"Models\JaegerMK1");
             targetModel = LoadModel(@"Models\target");
 
     
@@ -372,23 +372,24 @@ namespace WeltraumSpiel
 
         private void DrawModel()
         {
-            Matrix worldMatrix = Matrix.CreateScale(0.0005f, 0.0005f, 0.0005f) * Matrix.CreateRotationY(MathHelper.Pi) * Matrix.CreateFromQuaternion(xwingRotation) * Matrix.CreateTranslation(xwingPosition);
+            Matrix worldMatrix = Matrix.CreateScale(0.02f, 0.02f, 0.02f) * Matrix.CreateRotationY(MathHelper.Pi / 2) * Matrix.CreateFromQuaternion(xwingRotation) * Matrix.CreateTranslation(xwingPosition);
 
-            Matrix[] xwingTransforms = new Matrix[xwingModel.Bones.Count];
-            xwingModel.CopyAbsoluteBoneTransformsTo(xwingTransforms);
-            foreach (ModelMesh mesh in xwingModel.Meshes)
+
+            Matrix[] arrowTransforms = new Matrix[ship.Bones.Count];
+            ship.CopyAbsoluteBoneTransformsTo(arrowTransforms);
+
+            foreach (ModelMesh mesh in ship.Meshes)
             {
-                foreach (Effect currentEffect in mesh.Effects)
+                foreach (BasicEffect effect in mesh.Effects)
                 {
-                    currentEffect.CurrentTechnique = currentEffect.Techniques["Colored"];
-                    currentEffect.Parameters["xWorld"].SetValue(xwingTransforms[mesh.ParentBone.Index] * worldMatrix);
-                    currentEffect.Parameters["xView"].SetValue(viewMatrix);
-                    currentEffect.Parameters["xProjection"].SetValue(projectionMatrix);
-                    currentEffect.Parameters["xEnableLighting"].SetValue(true);
-                    currentEffect.Parameters["xLightDirection"].SetValue(lightDirection);
-                    currentEffect.Parameters["xAmbient"].SetValue(0.5f);
+                    effect.EnableDefaultLighting();  // Beleuchtung aktivieren
+                    //effect.World = worldMatrix * RotateToFace(waypointList[0].position, dirPos, Vector3.Up);
+                    effect.World = arrowTransforms[mesh.ParentBone.Index] * worldMatrix;
+                    effect.View = viewMatrix;
+                    effect.Projection = projectionMatrix;
                 }
                 mesh.Draw();
+
             }
         }
 
@@ -516,7 +517,8 @@ namespace WeltraumSpiel
             else
             {
                 float leftRightRot = 0;
-
+                float leftRightRoll = 0;
+                float upDownRot = 0;
                 float turningSpeed = (float)gameti.ElapsedGameTime.TotalMilliseconds / 1000.0f; //Test
                 turningSpeed *= 1.6f * gameSpeed;
                 KeyboardState keys = Keyboard.GetState();
@@ -525,13 +527,17 @@ namespace WeltraumSpiel
                 if (keys.IsKeyDown(Keys.A) || keys.IsKeyDown(Keys.Left))
                     leftRightRot -= turningSpeed;
 
-                float upDownRot = 0;
+                if (keys.IsKeyDown(Keys.Q))
+                    leftRightRoll -= turningSpeed;
+                if (keys.IsKeyDown(Keys.E))
+                    leftRightRoll += turningSpeed;
+
                 if (keys.IsKeyDown(Keys.S) || keys.IsKeyDown(Keys.Down))
                     upDownRot += turningSpeed;
                 if (keys.IsKeyDown(Keys.W) || keys.IsKeyDown(Keys.Up))
                     upDownRot -= turningSpeed;
 
-                Quaternion additionalRot = Quaternion.CreateFromAxisAngle(new Vector3(0, 0, -1), leftRightRot) * Quaternion.CreateFromAxisAngle(new Vector3(1, 0, 0), upDownRot);
+                Quaternion additionalRot = Quaternion.CreateFromAxisAngle(new Vector3(0, 0, -1), leftRightRoll) * Quaternion.CreateFromAxisAngle(new Vector3(1, 0, 0), upDownRot) * Quaternion.CreateFromAxisAngle(new Vector3(0, -1, 0), leftRightRot);
                 xwingRotation *= additionalRot;
                 MouseState state = Mouse.GetState();
 
@@ -548,6 +554,9 @@ namespace WeltraumSpiel
                         bulletList.Add(newBullet);
 
                         lastBulletTime = currentTime;
+                        SoundEffect sEffect;
+                        sEffect = Content.Load<SoundEffect>("Sounds/Weapon");
+                        sEffect.Play();
                     }
                 }
             }
@@ -555,8 +564,17 @@ namespace WeltraumSpiel
 
         private void MoveForward(ref Vector3 position, Quaternion rotationQuat, float speed)
         {
-            Vector3 addVector = Vector3.Transform(new Vector3(0, 0, -1), rotationQuat);
-            position += addVector * speed;
+            KeyboardState keys = Keyboard.GetState();
+            if(keys.IsKeyDown(Keys.LeftShift))
+            {
+                Vector3 addVector = Vector3.Transform(new Vector3(0, 0, -1), rotationQuat);
+                position += addVector * speed*2;
+            }
+            if(keys.IsKeyUp(Keys.LeftShift))
+            {
+                Vector3 addVector = Vector3.Transform(new Vector3(0, 0, -1), rotationQuat);
+                position += addVector * speed;
+            }
         }
 
         #endregion
