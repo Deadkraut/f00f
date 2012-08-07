@@ -1,4 +1,4 @@
-﻿#region ::::Chancelog::::
+﻿#region ::::Changelog::::
 /*
  * Das hier ist eine Screen Klasse die brauchen um die anderen Screens mit Vererbung zu nutzen
  * @author: Alexander Stoldt

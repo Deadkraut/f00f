@@ -1,4 +1,4 @@
-﻿#region ::::Chancelog::::
+﻿#region ::::Changelog::::
 /*
  * Das hier ist die IntorScreen Klasse die brauchen um das Intro anzuspielen
  * @author: Alexander Stoldt
