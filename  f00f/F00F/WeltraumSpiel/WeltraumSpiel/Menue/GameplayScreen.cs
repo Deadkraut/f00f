@@ -235,6 +235,10 @@ namespace WeltraumSpiel
                     i--;
                     AddTargets();
                     healthbarDow();        //Noch debugen
+                    SoundEffect seffect;
+                    seffect = Content.Load<SoundEffect>("Sounds/TargetExpl");
+                    seffect.Play();
+
                     return CollisionType.Target;
                 }
             }
