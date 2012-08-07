@@ -1,3 +1,6 @@
+Content\Sounds\TargetExpl.xnb
+Content\Sounds\EngineLoop.xnb
+Content\Sounds\Weapon.xnb
 Content\Models\target.xnb
 Content\Models\xwing.xnb
 Content\Models\Skybox\skybox.xnb
@@ -27,5 +30,3 @@ Content\Models\Skybox\Textures\SkyBox_Left_0.xnb
 Content\Models\Skybox\Textures\SkyBox_Front_0.xnb
 Content\Models\Skybox\Textures\SkyBox_Back_0.xnb
 Content\Models\Skybox\Textures\SkyBox_Bottom_0.xnb
-Content\Sounds\EngineLoop.xnb
-Content\Sounds\Weapon.xnb
