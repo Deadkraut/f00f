@@ -262,6 +262,7 @@ namespace WeltraumSpiel
         {
             if (punktabzug >= 450)
             {
+                
                 //Environment.Exit(0);
                 LoadingScreen.Load(ScreenManager, false, null, new BackgroundScreen(),
                                                            new MainMenuScreen());
@@ -290,6 +291,12 @@ namespace WeltraumSpiel
             else
                 pauseAlpha = Math.Max(pauseAlpha - 1f / 32, 0);
 
+            if (sefin.State == SoundState.Stopped && sefin.IsLooped == false)
+            {
+                sefin.IsLooped = true;
+                sefin.Play();
+            }
+
             if (IsActive)
             {
 
@@ -314,11 +321,7 @@ namespace WeltraumSpiel
                 UpdateBulletPositions(gameTime, moveSpeed);
             }
 
-            if (sefin.State == SoundState.Stopped)
-            {
-                sefin.IsLooped = true;
-                sefin.Play();
-            }
+            
 
         }
 
