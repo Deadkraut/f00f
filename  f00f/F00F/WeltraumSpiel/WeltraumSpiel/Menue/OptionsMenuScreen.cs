@@ -51,7 +51,7 @@ namespace WeltraumSpiel
             : base("Optionen")
         {
 
-            game = new WeltraumSpiel();
+            game = new WeltraumSpiel(false);        //Dient dazu die Einstellungen zu ändern
             // Create our menu entries.
             ungulateMenuEntry = new MenuEntry(string.Empty);
             languageMenuEntry = new MenuEntry(string.Empty);

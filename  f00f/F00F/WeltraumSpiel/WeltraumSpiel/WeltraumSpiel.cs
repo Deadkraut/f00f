@@ -58,7 +58,6 @@ namespace WeltraumSpiel
        public  GraphicsDeviceManager graphics;
        public  ScreenManager screenManager;
        public  GraphicsDevice device;
-     
 
         // By preloading any assets used by UI rendering, we avoid framerate glitches
         // when they suddenly need to be loaded in the middle of a menu transition.
@@ -72,7 +71,7 @@ namespace WeltraumSpiel
 
         #region Initialization
 
-        public WeltraumSpiel()
+        public WeltraumSpiel(bool gameSta)
         {
             Content.RootDirectory = "Content";
 
@@ -83,20 +82,27 @@ namespace WeltraumSpiel
             //graphics.IsFullScreen = false;
             graphics.ApplyChanges();
             Window.Title = "Fly in Space";
+            device = graphics.GraphicsDevice;
 
             // Create the screen manager component.
             screenManager = new ScreenManager(this);
-            device = graphics.GraphicsDevice;
-                
-     
+
+            if (gameSta == false)
+            {
                 Components.Add(screenManager);
 
                 // Activate the first screens.
                 screenManager.AddScreen(new BackgroundScreen(), null);
                 screenManager.AddScreen(new MainMenuScreen(), null);
+            }
+            else if (gameSta == true)
+            {
+                System.Console.WriteLine("Spiel;-)");
+            }
 
             
         }
+
 
         /// <summary>
         /// LoadContent will be called once per game and is the place to load
@@ -104,10 +110,10 @@ namespace WeltraumSpiel
         /// </summary>
         protected override void LoadContent()
         {
-            foreach (string asset in preloadAssets)
-            {
-                Content.Load<object>(asset);
-            }
+            //foreach (string asset in preloadAssets)
+            //{
+            //    Content.Load<object>(asset);
+            //}
           
         }
 
@@ -121,17 +127,25 @@ namespace WeltraumSpiel
         /// <summary>
         /// This is called when the game should draw itself.
         /// </summary>
-        protected override void Draw(GameTime gameTime)
-        {
-            graphics.GraphicsDevice.Clear(Color.Black);
+        //protected override void Draw(GameTime gameTime)
+        //{
+        //    graphics.GraphicsDevice.Clear(Color.Black);
 
-            // The real drawing happens inside the screen manager component.
-            base.Draw(gameTime);
-        }
+        //     //The real drawing happens inside the screen manager component.
+        //    base.Draw(gameTime);
+        //}
 
 
 
         #endregion
- 
+
+
+        static void Main(string[] args)
+        {
+            using (WeltraumSpiel game = new WeltraumSpiel(false))
+            {
+                game.Run();
+            }
+        }
     }
 }
