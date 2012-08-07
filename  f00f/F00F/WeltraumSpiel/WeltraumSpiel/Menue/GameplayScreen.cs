@@ -98,6 +98,10 @@ namespace WeltraumSpiel
         
         Texture2D mHealthBar;
 
+        SoundEffect engineSound;
+        SoundEffectInstance sefin;
+
+
         #endregion  
 
         #region Initialization
@@ -133,6 +137,9 @@ namespace WeltraumSpiel
 
             AddBoundaryBox();
             AddTargets();
+
+            engineSound = Content.Load<SoundEffect>("Sounds/EngineLoop");
+            sefin = engineSound.CreateInstance();
         }
 
         /// <summary>
@@ -301,6 +308,12 @@ namespace WeltraumSpiel
 
                 UpdateCamera();
                 UpdateBulletPositions(gameTime, moveSpeed);
+            }
+
+            if (sefin.State == SoundState.Stopped)
+            {
+                sefin.IsLooped = true;
+                sefin.Play();
             }
 
         }
@@ -590,11 +603,13 @@ namespace WeltraumSpiel
             {
                 Vector3 addVector = Vector3.Transform(new Vector3(0, 0, -1), rotationQuat);
                 position += addVector * speed*2;
+                sefin.Volume = 1.0f;
             }
             if(keys.IsKeyUp(Keys.LeftShift))
             {
                 Vector3 addVector = Vector3.Transform(new Vector3(0, 0, -1), rotationQuat);
                 position += addVector * speed;
+                sefin.Volume = 0.5f;
             }
         }
 
