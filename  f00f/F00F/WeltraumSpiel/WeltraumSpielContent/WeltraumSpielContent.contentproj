@@ -163,6 +163,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="gradient.png">
+      <Name>gradient</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="Textures\backgroundLoad.jpg">
       <Name>backgroundLoad</Name>
       <Importer>TextureImporter</Importer>
