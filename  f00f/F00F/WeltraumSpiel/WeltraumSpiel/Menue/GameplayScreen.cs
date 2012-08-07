@@ -51,9 +51,7 @@ namespace WeltraumSpiel
 
         #region Fields
 
-        //SpriteBatch mbatch; //Zeichnet die Lebenleiste
-        
-
+        //SpriteBatch mbatch; //Zeichnet die Lebenleist
         Effect effect;
 
         Model xwingModel;
@@ -103,7 +101,7 @@ namespace WeltraumSpiel
         
         public GameplayScreen()
         {
-            game = new WeltraumSpiel();
+            //game = new WeltraumSpiel(true);
         }
         /// <summary>
         /// Load graphics content for the game.
@@ -119,8 +117,9 @@ namespace WeltraumSpiel
 
     
             // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(game.GraphicsDevice);
-            device = game.GraphicsDevice;
+            spriteBatch = new SpriteBatch(ScreenManager.GraphicsDevice);
+ 
+            device = ScreenManager.GraphicsDevice;
 
             bulletTexture = Content.Load<Texture2D>(@"Textures\bullet1");
             skyboxModel = LoadModel(@"Models\Skybox\skybox", out skyboxTextures);
@@ -354,9 +353,7 @@ namespace WeltraumSpiel
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Draw(GameTime gameTime) 
-        {
-
-         
+        {     
             DrawSkybox();
             DrawModel();
             DrawTargets();

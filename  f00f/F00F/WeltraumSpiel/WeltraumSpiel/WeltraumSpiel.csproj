@@ -112,7 +112,9 @@
     <Compile Include="MenueManager\MenuEntry.cs" />
     <Compile Include="MenueManager\ScreenManager.cs" />
     <Compile Include="Menue\BackgroundScreen.cs" />
-    <Compile Include="Menue\GameplayScreen.cs" />
+    <Compile Include="Menue\GameplayScreen.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Menue\IntroScreen.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -124,7 +126,6 @@
     <Compile Include="Menue\PauseMenuScreen .cs" />
     <Compile Include="Menue\PlayerIndexEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Program.cs" />
     <Compile Include="WeltraumSpiel.cs" />
   </ItemGroup>
   <ItemGroup>
