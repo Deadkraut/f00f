@@ -95,8 +95,11 @@ namespace WeltraumSpiel
         SpriteBatch spriteBatch; //Ermöglicht das Zeichnen einer Gruppe von Sprites mithilfe derselben Einstellungen. 
         GraphicsDevice device;
         GameTime gameti;    // Wird benötigt um an die Spielzeit für die Handelinput zu kommen
-        
+
+        HUD.Crosshair crosshair;
+
         Texture2D mHealthBar;
+        Texture2D chTexture;
 
         SoundEffect engineSound;
         SoundEffectInstance sefin;
@@ -121,7 +124,6 @@ namespace WeltraumSpiel
             ship = Content.Load<Model>(@"Models\JaegerMK1");
             targetModel = LoadModel(@"Models\target");
 
-    
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(ScreenManager.GraphicsDevice);
             mHealthBar = Content.Load<Texture2D>(@"Textures\healthBar") as Texture2D;
@@ -131,9 +133,11 @@ namespace WeltraumSpiel
             bulletTexture = Content.Load<Texture2D>(@"Textures\bullet1");
             skyboxModel = LoadModel(@"Models\Skybox\skybox", out skyboxTextures);
 
-
-
             gameFont = Content.Load<SpriteFont>(@"Fonts\gamefont");
+
+            chTexture = Content.Load<Texture2D>(@"Textures\crosshair");
+            Rectangle newRectangle = new Rectangle(0, 0, 50, 50);
+            crosshair = new HUD.Crosshair(chTexture, newRectangle, 4, ScreenManager.Game.Window.ClientBounds.Width, ScreenManager.Game.Window.ClientBounds.Height);
 
             AddBoundaryBox();
             AddTargets();
@@ -381,6 +385,7 @@ namespace WeltraumSpiel
             DrawModel();
             DrawTargets();
             DrawBullets();
+            crosshair.Draw(spriteBatch);
 
 
             //Hier wird die Lebensleiste erzeugt
