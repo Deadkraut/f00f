@@ -107,6 +107,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HUD\Crosshair.cs" />
+    <Compile Include="HUD\Sprite.cs" />
     <Compile Include="MenueManager\GameScreen.cs" />
     <Compile Include="MenueManager\InputState.cs" />
     <Compile Include="MenueManager\MenuEntry.cs" />

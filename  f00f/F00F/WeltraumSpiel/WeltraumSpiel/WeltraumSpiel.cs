@@ -41,6 +41,11 @@
  * Shift(links) - Das Schiff fliegt mit doppelter Geschwindigkeit.
  * Geschossen wurde ein Soundeffekt beigefügt.
  * 
+ * @version: 1.6
+ * @author: Marcel Abel
+ * Ich habe ein cyanfarbenes Fadenkreuz hinzugefügt.
+ * Außerdem einen Ordner HUD und 2 neue Klassen: Sprite und Crosshair.
+ * Der Code der Klasse Sprite stammt aus dem Buch: XNA 4.0 Game Development by Example Beginner's Guide - Chapter 5 von Kurt Jaegers
  * 
  */
 
