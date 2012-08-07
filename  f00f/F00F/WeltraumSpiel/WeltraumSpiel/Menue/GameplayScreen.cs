@@ -5,6 +5,12 @@
  *
  * @author: Alexander Stoldt
  * @version: 1.0
+ * 
+ * Diese Klasse wird benötigt um das Spiel auch spielen zu können
+ * 
+ * @author: Alexander Stoldt
+ * @version: 1.1
+ * Ich habe die Lebensleiste eingefügt und diese dann gebugfixt
  */
 #endregion
 #region Using Statements
@@ -51,7 +57,6 @@ namespace WeltraumSpiel
 
         #region Fields
 
-        //SpriteBatch mbatch; //Zeichnet die Lebenleist
         Effect effect;
 
         Model ship;
@@ -62,6 +67,7 @@ namespace WeltraumSpiel
 
 
         int healthbarCon = 0; // Wird benötigt um die healthbar zu kontrolieren
+        int punktabzug;
         float gameSpeed = 1.0f;
 
         List<BoundingSphere> targetList = new List<BoundingSphere>(); Texture2D bulletTexture;
@@ -88,11 +94,8 @@ namespace WeltraumSpiel
 
         SpriteBatch spriteBatch; //Ermöglicht das Zeichnen einer Gruppe von Sprites mithilfe derselben Einstellungen. 
         GraphicsDevice device;
-        WeltraumSpiel game;
         GameTime gameti;    // Wird benötigt um an die Spielzeit für die Handelinput zu kommen
-
-        SpriteBatch mBatch;
-
+        
         Texture2D mHealthBar;
 
         #endregion  
@@ -101,7 +104,6 @@ namespace WeltraumSpiel
         
         public GameplayScreen()
         {
-            //game = new WeltraumSpiel(true);
         }
         /// <summary>
         /// Load graphics content for the game.
@@ -118,6 +120,7 @@ namespace WeltraumSpiel
     
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(ScreenManager.GraphicsDevice);
+            mHealthBar = Content.Load<Texture2D>(@"Textures\healthBar") as Texture2D;
  
             device = ScreenManager.GraphicsDevice;
 
@@ -231,7 +234,7 @@ namespace WeltraumSpiel
                     targetList.RemoveAt(i);
                     i--;
                     AddTargets();
-                    //healthbarDow();        //Noch debugen
+                    healthbarDow();        //Noch debugen
                     return CollisionType.Target;
                 }
             }
@@ -240,19 +243,22 @@ namespace WeltraumSpiel
             return CollisionType.None;
         }
 
-        //public void healthbarDow()
-        //{
-        //    if (game.Punktabzug >= 450)
-        //    {
-        //        Environment.Exit(0);
-        //    }
-        //    else if (healthbarCon == 1)
-        //    {
-        //        game.Punktabzug += 150; // Hier wird bei einer Kolision etwas von der Lebensleiste abgezogen
-        //        System.Console.WriteLine("Der Punkestand ist" + game.Punktabzug); // Zum Testen
-        //    }
-        //    healthbarCon = 0;
-        //}
+        public void healthbarDow()
+        {
+            if (punktabzug >= 450)
+            {
+                //Environment.Exit(0);
+                LoadingScreen.Load(ScreenManager, false, null, new BackgroundScreen(),
+                                                           new MainMenuScreen());
+
+            }
+            else if (healthbarCon == 1)
+            {
+                punktabzug += 150; // Hier wird bei einer Kolision etwas von der Lebensleiste abgezogen
+                System.Console.WriteLine("Der Punkestand ist" + punktabzug); // Zum Testen
+            }
+            healthbarCon = 0;
+        }
 
         #endregion
 
@@ -281,7 +287,7 @@ namespace WeltraumSpiel
                 {
                     gameSpeed /= 1.1f;
                     healthbarCon = 1;       //Dient als Kontrolle für die Methode healthbarDow()
-                    //healthbarDow();
+                    healthbarDow();
                 }
                 if (CheckCollision(xwingSpere) == CollisionType.Boundary)
                 {
@@ -358,6 +364,17 @@ namespace WeltraumSpiel
             DrawModel();
             DrawTargets();
             DrawBullets();
+
+
+            //Hier wird die Lebensleiste erzeugt
+            spriteBatch.Begin();
+            //Draw the health for the health bar
+            spriteBatch.Draw(mHealthBar, new Rectangle(ScreenManager.Game.Window.ClientBounds.Width / 2 - mHealthBar.Width / 2,
+                                                  30, mHealthBar.Width - punktabzug, 44), new Rectangle(0, 45, mHealthBar.Width, 44), Color.Red);
+            //Draw the box around the health bar
+            spriteBatch.Draw(mHealthBar, new Rectangle(ScreenManager.Game.Window.ClientBounds.Width / 2 - mHealthBar.Width / 2,
+                                                  30, mHealthBar.Width - punktabzug, 44), new Rectangle(0, 0, mHealthBar.Width, 44), Color.White);
+            spriteBatch.End();
 
            gameti = gameTime;  //Wird benötigt um auf die Gametime in HandelInput zu zu greifen
 
