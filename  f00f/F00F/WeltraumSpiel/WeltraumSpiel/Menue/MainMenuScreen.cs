@@ -32,16 +32,19 @@ namespace WeltraumSpiel
             // Create our menu entries.
             MenuEntry playGameMenuEntry = new MenuEntry("Spielen");
             MenuEntry optionsMenuEntry = new MenuEntry("Optionen");
+            MenuEntry steuerungEntry = new MenuEntry("Steuerung");
             MenuEntry exitMenuEntry = new MenuEntry("Ende");
 
             // Hook up menu event handlers.
             playGameMenuEntry.Selected += PlayGameMenuEntrySelected;
             optionsMenuEntry.Selected += OptionsMenuEntrySelected;
+            steuerungEntry.Selected += SteuerungsMenuEntrySelected;
             exitMenuEntry.Selected += OnCancel;
 
             // Add entries to the menu.
             MenuEntries.Add(playGameMenuEntry);
             MenuEntries.Add(optionsMenuEntry);
+            MenuEntries.Add(steuerungEntry);
             MenuEntries.Add(exitMenuEntry);
         }
 
@@ -67,6 +70,14 @@ namespace WeltraumSpiel
         void OptionsMenuEntrySelected(object sender, PlayerIndexEventArgs e)
         {
             ScreenManager.AddScreen(new OptionsMenuScreen(), e.PlayerIndex);
+        }
+
+        /// <summary>
+        /// Event handler for when the Options menu entry is selected.
+        /// </summary>
+        void SteuerungsMenuEntrySelected(object sender, PlayerIndexEventArgs e)
+        {
+            ScreenManager.AddScreen(new SteuerungsMenuScreen(), e.PlayerIndex);
         }
 
 

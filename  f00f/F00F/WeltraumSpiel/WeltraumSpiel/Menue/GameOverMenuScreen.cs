@@ -1,6 +1,6 @@
 ﻿#region ::::Changelog::::
 /*
- *PauseMenuScreen.cs
+ *GameOverMenuScreen.cs
  * 
  *
  * @author: Alexander Stoldt
@@ -14,38 +14,30 @@ using WeltraumSpiel.MenueManager; // Dient dazu das MenuEntry hier auch geladen 
 
 namespace WeltraumSpiel
 {
-    /// <summary>
-    /// The pause menu comes up over the top of the game,
-    /// giving the player options to resume or quit.
-    /// </summary>
-    class PauseMenuScreen : MenuScreen
+    class GameOverMenuScreen : MenuScreen
     {
+
         #region Initialization
 
 
         /// <summary>
         /// Constructor.
         /// </summary>
-        public PauseMenuScreen()
-            : base("Pause")
+        public GameOverMenuScreen()
+            : base("GameOver")
         {
             // Create our menu entries.
             MenuEntry newGameMenuEntry = new MenuEntry("Neustarten");
-            MenuEntry resumeGameMenuEntry = new MenuEntry("Weiter");
             MenuEntry quitGameMenuEntry = new MenuEntry("Beenden");
 
             // Hook up menu event handlers.
             newGameMenuEntry.Selected += newGameMenuEntrySelected;
-            resumeGameMenuEntry.Selected += OnCancel;
             quitGameMenuEntry.Selected += QuitGameMenuEntrySelected;
 
             // Add entries to the menu.
             MenuEntries.Add(newGameMenuEntry);
-            MenuEntries.Add(resumeGameMenuEntry);
             MenuEntries.Add(quitGameMenuEntry);
         }
-
-
         #endregion
 
         #region Handle Input
@@ -79,7 +71,7 @@ namespace WeltraumSpiel
 
         void newGameMenuEntrySelected(object sender, PlayerIndexEventArgs e)
         {
-            const string message = "Bist du sicher das du neu Starten willst?";
+            const string message = "Bist du sicher das du nochmal Spielen willst?";
 
             MessageBoxScreen newGameMessageBox = new MessageBoxScreen(message);
             newGameMessageBox.Accepted += NewGameMessageBox;

@@ -245,7 +245,7 @@ namespace WeltraumSpiel
                     targetList.RemoveAt(i);
                     i--;
                     AddTargets();
-                    healthbarDow();        //Noch debugen
+                    healthbarDow();      
                     SoundEffect seffect;
                     seffect = Content.Load<SoundEffect>("Sounds/TargetExpl");
                     seffect.Play();
@@ -260,20 +260,20 @@ namespace WeltraumSpiel
 
         public void healthbarDow()
         {
-            if (punktabzug >= 450)
-            {
-                
-                //Environment.Exit(0);
-                LoadingScreen.Load(ScreenManager, false, null, new BackgroundScreen(),
-                                                           new MainMenuScreen());
 
-            }
-            else if (healthbarCon == 1)
+            if (healthbarCon == 1)
             {
                 punktabzug += 150; // Hier wird bei einer Kolision etwas von der Lebensleiste abgezogen
-                System.Console.WriteLine("Der Punkestand ist" + punktabzug); // Zum Testen
+                System.Console.WriteLine("Der Punkestand ist " + punktabzug); // Zum Testen
+                healthbarCon = 0;
+                healthbarDow();
             }
-            healthbarCon = 0;
+            else if (punktabzug >= 600)
+            {
+                ScreenManager.AddScreen(new  GameOverMenuScreen(), ControllingPlayer);
+
+            }
+            
         }
 
         #endregion
@@ -561,6 +561,7 @@ namespace WeltraumSpiel
                 float leftRightRot = 0;
                 float leftRightRoll = 0;
                 float upDownRot = 0;
+                
                 float turningSpeed = (float)gameti.ElapsedGameTime.TotalMilliseconds / 1000.0f; //Test
                 turningSpeed *= 1.6f * gameSpeed;
                 KeyboardState keys = Keyboard.GetState();
@@ -584,7 +585,7 @@ namespace WeltraumSpiel
                 MouseState state = Mouse.GetState();
 
                 //if (keys.IsKeyDown(Keys.Space))
-                if (state.LeftButton == ButtonState.Pressed)
+                if (state.LeftButton == ButtonState.Pressed || keys.IsKeyDown(Keys.Space))
                 {
                     double currentTime = gameti.TotalGameTime.TotalMilliseconds;    //
                     if (currentTime - lastBulletTime > 100)
