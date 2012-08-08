@@ -1,6 +1,6 @@
 ﻿#region ::::Changelog::::
 /*
- *OptionsMenuScreen.cs
+ *SteuerungsMenuScreen.cs
  * 
  *
  * @author: Alexander Stoldt
@@ -11,9 +11,10 @@
 using Microsoft.Xna.Framework;
 using WeltraumSpiel.MenueManager; // Dient dazu das MenuEntry hier auch geladen wird
 #endregion
+
 namespace WeltraumSpiel
 {
-    class OptionsMenuScreen : MenuScreen
+    class SteuerungsMenuScreen : MenuScreen
     {
         #region Fields
 
@@ -42,12 +43,8 @@ namespace WeltraumSpiel
 
         #region Initialization
 
-
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        public OptionsMenuScreen()
-            : base("Optionen")
+        public SteuerungsMenuScreen()
+            : base("Steuerung")
         {
 
             // Create our menu entries.
@@ -59,8 +56,6 @@ namespace WeltraumSpiel
             SetMenuEntryText();
 
             MenuEntry back = new MenuEntry("Zurueck");
-
-            string auswahl = "off";
 
             // Hook up menu event handlers.
             ungulateMenuEntry.Selected += UngulateMenuEntrySelected;
@@ -77,21 +72,19 @@ namespace WeltraumSpiel
             MenuEntries.Add(back);
         }
 
-
         /// <summary>
         /// Fills in the latest values for the options screen menu text.
         /// </summary>
         void SetMenuEntryText()
         {
-            ungulateMenuEntry.Text = "Preferred ungulate: " + currentUngulate;
+            ungulateMenuEntry.Text = "Fighter hoch = W,Pfeiltaste Hoch ";
             languageMenuEntry.Text = "Language: " + languages[currentLanguage];
-            frobnicateMenuEntry.Text = "Fullscreen: " + (frobnicate ? "off": "on");
+            frobnicateMenuEntry.Text = "Fullscreen: " + (frobnicate ? "off" : "on");
 
             elfMenuEntry.Text = "elf: " + elf;
         }
-
-
         #endregion
+
 
         #region Handle Input
         /// <summary>

@@ -54,8 +54,8 @@ namespace WeltraumSpiel
         /// </summary>
         public MessageBoxScreen(string message, bool includeUsageText)
         {
-            const string usageText = "\n Leertaste, Enter = ok" +
-                                     "\n Esc = Zurueck zu Windows";
+            const string usageText = "\n Leertaste, Enter = Ok" +
+                                     "\n Esc = Abbrechen";
 
             if (includeUsageText)
                 this.message = message + usageText;
