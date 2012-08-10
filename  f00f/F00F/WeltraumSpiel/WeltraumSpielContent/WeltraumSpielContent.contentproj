@@ -174,13 +174,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\JaegerMK1.x">
-      <Name>JaegerMK1</Name>
-      <Importer>XImporter</Importer>
-      <Processor>ModelProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Sounds\EngineLoop.wav">
       <Name>EngineLoop</Name>
       <Importer>WavImporter</Importer>
@@ -209,6 +202,37 @@
       <Name>ButtonPress</Name>
       <Importer>WavImporter</Importer>
       <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Sounds\MenuTitle.wav">
+      <Name>MenuTitle</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Models\JaegerMK1.x">
+      <Name>JaegerMK1</Name>
+      <Importer>XImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Models\JaegerCenter.x">
+      <Name>JaegerCenter</Name>
+      <Importer>XImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\JaegerWingLeft.x">
+      <Name>JaegerWingLeft</Name>
+      <Importer>XImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\JaegerWingRight.x">
+      <Name>JaegerWingRight</Name>
+      <Importer>XImporter</Importer>
+      <Processor>ModelProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
