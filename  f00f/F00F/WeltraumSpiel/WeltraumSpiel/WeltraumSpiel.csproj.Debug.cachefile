@@ -1,6 +1,8 @@
 Content\Sounds\TargetExpl.xnb
 Content\Sounds\EngineLoop.xnb
 Content\Sounds\Weapon.xnb
+Content\Sounds\ButtonHover.xnb
+Content\Sounds\ButtonPress.xnb
 Content\Models\target.xnb
 Content\Models\xwing.xnb
 Content\Models\Skybox\skybox.xnb
@@ -19,7 +21,6 @@ Content\Textures\intro.xnb
 Content\Fonts\blank.xnb
 Content\Textures\background.xnb
 Content\Fonts\gradient.xnb
-Content\gradient.xnb
 Content\Textures\backgroundLoad.xnb
 Content\Textures\crosshair.xnb
 Content\Effects\effects.xnb

@@ -101,6 +101,7 @@ namespace WeltraumSpiel
         Texture2D mHealthBar;
         Texture2D chTexture;
 
+        SoundEffect targetExlposion;
         SoundEffect engineSound;
         SoundEffectInstance sefin;
 
@@ -142,8 +143,10 @@ namespace WeltraumSpiel
             AddBoundaryBox();
             AddTargets();
 
-            engineSound = Content.Load<SoundEffect>("Sounds/EngineLoop");
+            engineSound = Content.Load<SoundEffect>(@"Sounds\EngineLoop");
             sefin = engineSound.CreateInstance();
+
+            targetExlposion = Content.Load<SoundEffect>(@"Sounds\TargetExpl");
         }
 
         /// <summary>
@@ -246,9 +249,7 @@ namespace WeltraumSpiel
                     i--;
                     AddTargets();
                     healthbarDow();      
-                    SoundEffect seffect;
-                    seffect = Content.Load<SoundEffect>("Sounds/TargetExpl");
-                    seffect.Play();
+                    targetExlposion.Play();
 
                     return CollisionType.Target;
                 }
@@ -417,16 +418,15 @@ namespace WeltraumSpiel
             Matrix worldMatrix = Matrix.CreateScale(0.02f, 0.02f, 0.02f) * Matrix.CreateRotationY(MathHelper.Pi / 2) * Matrix.CreateFromQuaternion(xwingRotation) * Matrix.CreateTranslation(xwingPosition);
 
 
-            Matrix[] arrowTransforms = new Matrix[ship.Bones.Count];
-            ship.CopyAbsoluteBoneTransformsTo(arrowTransforms);
+            Matrix[] modelTransforms = new Matrix[ship.Bones.Count];
+            ship.CopyAbsoluteBoneTransformsTo(modelTransforms);
 
             foreach (ModelMesh mesh in ship.Meshes)
             {
                 foreach (BasicEffect effect in mesh.Effects)
                 {
                     effect.EnableDefaultLighting();  // Beleuchtung aktivieren
-                    //effect.World = worldMatrix * RotateToFace(waypointList[0].position, dirPos, Vector3.Up);
-                    effect.World = arrowTransforms[mesh.ParentBone.Index] * worldMatrix;
+                    effect.World = modelTransforms[mesh.ParentBone.Index] * worldMatrix;
                     effect.View = viewMatrix;
                     effect.Projection = projectionMatrix;
                 }
@@ -584,7 +584,6 @@ namespace WeltraumSpiel
                 xwingRotation *= additionalRot;
                 MouseState state = Mouse.GetState();
 
-                //if (keys.IsKeyDown(Keys.Space))
                 if (state.LeftButton == ButtonState.Pressed || keys.IsKeyDown(Keys.Space))
                 {
                     double currentTime = gameti.TotalGameTime.TotalMilliseconds;    //

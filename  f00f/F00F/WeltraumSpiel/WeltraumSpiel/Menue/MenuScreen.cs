@@ -10,7 +10,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Input;
 using WeltraumSpiel.MenueManager;           // Wird benötig um auf die Klasse in MenueManager zu zu greifen
 #endregion
@@ -31,6 +31,10 @@ namespace WeltraumSpiel
         List<MenuEntry> menuEntries = new List<MenuEntry>();
         int selectedEntry = 0;
         string menuTitle;
+        SoundEffect menuButtonHover;
+        SoundEffect menuButtonPress;
+        //SoundEffect menuTitleSound;
+        //SoundEffectInstance sefin;
 
         #endregion
 
@@ -63,6 +67,16 @@ namespace WeltraumSpiel
             TransitionOffTime = TimeSpan.FromSeconds(0.5);
         }
 
+        /// <summary>
+        /// Laedt Grafikcontenf für den Bildschirm
+        /// </summary>
+        public override void LoadContent()
+        {
+            menuButtonHover = ScreenManager.Game.Content.Load<SoundEffect>(@"Sounds\ButtonHover");
+            menuButtonPress = ScreenManager.Game.Content.Load<SoundEffect>(@"Sounds\ButtonPress");
+            //menuTitleSound = ScreenManager.Game.Content.Load<SoundEffect>(@"Sounds\MenuTitle");
+            //sefin = menuTitleSound.CreateInstance();
+        }
 
         #endregion
 
@@ -82,6 +96,7 @@ namespace WeltraumSpiel
 
                 if (selectedEntry < 0)
                     selectedEntry = menuEntries.Count - 1;
+                menuButtonHover.Play();
             }
 
             // Move to the next menu entry?
@@ -91,6 +106,7 @@ namespace WeltraumSpiel
 
                 if (selectedEntry >= menuEntries.Count)
                     selectedEntry = 0;
+                menuButtonHover.Play();
             }
 
             // Accept or cancel the menu? We pass in our ControllingPlayer, which may
@@ -116,6 +132,7 @@ namespace WeltraumSpiel
         /// </summary>
         protected virtual void OnSelectEntry(int entryIndex, PlayerIndex playerIndex)
         {
+            menuButtonPress.Play();
             menuEntries[entryIndex].OnSelectEntry(playerIndex);
         }
 
@@ -125,6 +142,7 @@ namespace WeltraumSpiel
         /// </summary>
         protected virtual void OnCancel(PlayerIndex playerIndex)
         {
+            menuButtonPress.Play();
             ExitScreen();
         }
 
@@ -134,6 +152,7 @@ namespace WeltraumSpiel
         /// </summary>
         protected void OnCancel(object sender, PlayerIndexEventArgs e)
         {
+            menuButtonPress.Play();
             OnCancel(e.PlayerIndex);
         }
 
@@ -194,6 +213,11 @@ namespace WeltraumSpiel
 
                 menuEntries[i].Update(this, isSelected, gameTime);
             }
+            //if (sefin.State == SoundState.Stopped && sefin.IsLooped == false)
+            //{
+            //    sefin.IsLooped = true;
+            //    sefin.Play();
+            //}
         }
 
 
