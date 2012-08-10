@@ -52,6 +52,8 @@ namespace WeltraumSpiel
 
         const int maxTargets = 500;
         const float dimension = 500; // Dimension der BoundaryBox
+        private float turnMod = 0.75f;
+        public int score = 0;
 
         #endregion
 
@@ -249,7 +251,7 @@ namespace WeltraumSpiel
                     i--;
                     AddTargets();
                     healthbarDow();      
-                    targetExlposion.Play();
+                    
 
                     return CollisionType.Target;
                 }
@@ -308,7 +310,12 @@ namespace WeltraumSpiel
                 BoundingSphere xwingSpere = new BoundingSphere(xwingPosition, 0.04f);
                 if (CheckCollision(xwingSpere) == CollisionType.Target)
                 {
-                    gameSpeed /= 1.1f;
+                    if (gameSpeed > 1.0f)
+                    {
+                        gameSpeed /= 1.1f;
+                        turnMod *= 1.1f;
+                    }
+
                     healthbarCon = 1;       //Dient als Kontrolle für die Methode healthbarDow()
                     healthbarDow();
                 }
@@ -332,14 +339,14 @@ namespace WeltraumSpiel
             for (int i = 0; i < bulletList.Count; i++)
             {
                 Bullet currentBullet = bulletList[i];
-                if (currentTime - currentBullet.persistence > 10000)
+                if (currentTime - currentBullet.persistence > 2500)
                 {
                     bulletList.RemoveAt(i);
                     i--;
                 }
                 else
                 {
-                    MoveForward(ref currentBullet.position, currentBullet.rotation, moveSpeed * 2.0f);
+                    MoveForward(ref currentBullet.position, currentBullet.rotation, moveSpeed * 5.0f);
                     bulletList[i] = currentBullet;
 
                     BoundingSphere bulletSphere = new BoundingSphere(currentBullet.position, 0.05f);
@@ -350,7 +357,13 @@ namespace WeltraumSpiel
                         i--;
 
                         if (colType == CollisionType.Target)
-                            gameSpeed *= 1.05f;
+                            targetExlposion.Play();
+                            score += 50;
+                        if (gameSpeed < 5.0f)
+                        {
+                            turnMod /= 1.2f;
+                            gameSpeed *= 1.2f;
+                        }
                     }
                 }
             }
@@ -566,19 +579,19 @@ namespace WeltraumSpiel
                 turningSpeed *= 1.6f * gameSpeed;
                 KeyboardState keys = Keyboard.GetState();
                 if (keys.IsKeyDown(Keys.D) || keys.IsKeyDown(Keys.Right))
-                    leftRightRot += turningSpeed;
+                    leftRightRot += turningSpeed * turnMod;
                 if (keys.IsKeyDown(Keys.A) || keys.IsKeyDown(Keys.Left))
-                    leftRightRot -= turningSpeed;
+                    leftRightRot -= turningSpeed * turnMod;
 
                 if (keys.IsKeyDown(Keys.Q))
-                    leftRightRoll -= turningSpeed;
+                    leftRightRoll -= turningSpeed * turnMod * 1.5f;
                 if (keys.IsKeyDown(Keys.E))
-                    leftRightRoll += turningSpeed;
+                    leftRightRoll += turningSpeed * turnMod * 1.5f;
 
                 if (keys.IsKeyDown(Keys.S) || keys.IsKeyDown(Keys.Down))
-                    upDownRot += turningSpeed;
+                    upDownRot += turningSpeed * turnMod;
                 if (keys.IsKeyDown(Keys.W) || keys.IsKeyDown(Keys.Up))
-                    upDownRot -= turningSpeed;
+                    upDownRot -= turningSpeed * turnMod;
 
                 Quaternion additionalRot = Quaternion.CreateFromAxisAngle(new Vector3(0, 0, -1), leftRightRoll) * Quaternion.CreateFromAxisAngle(new Vector3(1, 0, 0), upDownRot) * Quaternion.CreateFromAxisAngle(new Vector3(0, -1, 0), leftRightRot);
                 xwingRotation *= additionalRot;
@@ -587,7 +600,7 @@ namespace WeltraumSpiel
                 if (state.LeftButton == ButtonState.Pressed || keys.IsKeyDown(Keys.Space))
                 {
                     double currentTime = gameti.TotalGameTime.TotalMilliseconds;    //
-                    if (currentTime - lastBulletTime > 100)
+                    if (currentTime - lastBulletTime > 150)
                     {
                         Bullet newBullet = new Bullet();
                         newBullet.position = xwingPosition;
