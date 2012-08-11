@@ -86,7 +86,6 @@ namespace WeltraumSpiel
             ungulateMenuEntry.Text = "Preferred ungulate: " + currentUngulate;
             languageMenuEntry.Text = "Language: " + languages[currentLanguage];
             frobnicateMenuEntry.Text = "Fullscreen: " + (frobnicate ? "off": "on");
-
             elfMenuEntry.Text = "elf: " + elf;
         }
 
@@ -100,7 +99,6 @@ namespace WeltraumSpiel
         void UngulateMenuEntrySelected(object sender, PlayerIndexEventArgs e)
         {
             currentUngulate++;
-
             if (currentUngulate > Ungulate.Llama)
                 currentUngulate = 0;
 
@@ -124,7 +122,6 @@ namespace WeltraumSpiel
         void FrobnicateMenuEntrySelected(object sender, PlayerIndexEventArgs e)
         {
             frobnicate = !frobnicate;
-
             SetMenuEntryText();
         }
 
