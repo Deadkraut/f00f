@@ -1,10 +1,16 @@
 Content\Sounds\TargetExpl.xnb
 Content\Sounds\EngineLoop.xnb
 Content\Sounds\Weapon.xnb
+Content\Sounds\ButtonHover.xnb
+Content\Sounds\ButtonPress.xnb
+Content\Sounds\ShipExpl.xnb
 Content\Models\target.xnb
 Content\Models\xwing.xnb
 Content\Models\Skybox\skybox.xnb
 Content\Models\JaegerMK1.xnb
+Content\Models\JaegerCenter.xnb
+Content\Models\JaegerWingLeft.xnb
+Content\Models\JaegerWingRight.xnb
 Content\Models\Skybox\Textures\skybox_back.xnb
 Content\Models\Skybox\Textures\skybox_bottom.xnb
 Content\Models\Skybox\Textures\skybox_front 2.xnb
@@ -30,9 +36,3 @@ Content\Models\Skybox\Textures\SkyBox_Left_0.xnb
 Content\Models\Skybox\Textures\SkyBox_Front_0.xnb
 Content\Models\Skybox\Textures\SkyBox_Back_0.xnb
 Content\Models\Skybox\Textures\SkyBox_Bottom_0.xnb
-Content\Sounds\ButtonHover.xnb
-Content\Sounds\ButtonPress.xnb
-Content\Sounds\MenuTitle.xnb
-Content\Models\JaegerCenter.xnb
-Content\Models\JaegerWingLeft.xnb
-Content\Models\JaegerWingRight.xnb
