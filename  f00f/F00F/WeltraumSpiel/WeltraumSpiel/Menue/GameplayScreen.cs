@@ -28,7 +28,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace WeltraumSpiel
 {
-   /// <summary>
+    /// <summary>
     /// This screen implements the actual game logic. It is just a
     /// placeholder to get the idea across: you'll probably want to
     /// put some more interesting gameplay in here!
@@ -47,7 +47,7 @@ namespace WeltraumSpiel
         }
 
         #endregion
-        
+
         #region Constants
 
         const int maxTargets = 500;
@@ -61,12 +61,14 @@ namespace WeltraumSpiel
 
         Effect effect;
 
-        Model ship;
         Model skyboxModel;
         Model targetModel;
+        Model ship;
+
 
         Texture2D[] skyboxTextures;
 
+        bool destroyed;
 
         int healthbarCon = 0; // Wird benötigt um die healthbar zu kontrolieren
         int punktabzug;
@@ -94,6 +96,7 @@ namespace WeltraumSpiel
         float pauseAlpha;
 
 
+
         SpriteBatch spriteBatch; //Ermöglicht das Zeichnen einer Gruppe von Sprites mithilfe derselben Einstellungen. 
         GraphicsDevice device;
         GameTime gameti;    // Wird benötigt um an die Spielzeit für die Handelinput zu kommen
@@ -103,17 +106,28 @@ namespace WeltraumSpiel
         Texture2D mHealthBar;
         Texture2D chTexture;
 
+        SoundEffect weaponSound;
         SoundEffect targetExlposion;
         SoundEffect engineSound;
         SoundEffectInstance sefin;
 
+        SoundEffect shipExplosion;
+        Model[] destroyedShip;
+        float leftWingRotation = 1.0f;
+        float centerRotation = 1.0f;
+        float rightWingRotation = 1.0f;
+        double lastDestroyedTime = 0;
+        Vector3 shipWingLeftPos;
+        Vector3 shipCenterPos;
+        Vector3 shipWingRightPos;
 
-        #endregion  
+        #endregion
 
         #region Initialization
-        
+
         public GameplayScreen()
         {
+            destroyed = false;
         }
         /// <summary>
         /// Load graphics content for the game.
@@ -126,11 +140,12 @@ namespace WeltraumSpiel
             effect = Content.Load<Effect>(@"Effects\effects");
             ship = Content.Load<Model>(@"Models\JaegerMK1");
             targetModel = LoadModel(@"Models\target");
+            destroyedShip = new Model[] { Content.Load<Model>(@"Models\JaegerWingLeft"), Content.Load<Model>(@"Models\JaegerCenter"), Content.Load<Model>(@"Models\JaegerWingRight") };
 
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(ScreenManager.GraphicsDevice);
             mHealthBar = Content.Load<Texture2D>(@"Textures\healthBar") as Texture2D;
- 
+
             device = ScreenManager.GraphicsDevice;
 
             bulletTexture = Content.Load<Texture2D>(@"Textures\bullet1");
@@ -148,7 +163,11 @@ namespace WeltraumSpiel
             engineSound = Content.Load<SoundEffect>(@"Sounds\EngineLoop");
             sefin = engineSound.CreateInstance();
 
+            shipExplosion = Content.Load<SoundEffect>(@"Sounds\ShipExpl");
+
             targetExlposion = Content.Load<SoundEffect>(@"Sounds\TargetExpl");
+
+            weaponSound = Content.Load<SoundEffect>(@"Sounds\Weapon");
         }
 
         /// <summary>
@@ -196,10 +215,6 @@ namespace WeltraumSpiel
             boundaryPoints[5] = new Vector3(-1, -1, 1) * dimension;
             boundaryPoints[6] = new Vector3(1, 1, -1) * dimension;
             boundaryPoints[7] = new Vector3(-1, -1, -1) * dimension;
-
-            //Vector3[] boundaryPoints = new Vector3[2];
-            //boundaryPoints[0] = new Vector3(1, 1, 1) * -dimension; // minValue
-            //boundaryPoints[1] = new Vector3(1, 1, 1) * dimension; // maxValue
 
             boundaryBox = BoundingBox.CreateFromPoints(boundaryPoints);
         }
@@ -250,8 +265,8 @@ namespace WeltraumSpiel
                     targetList.RemoveAt(i);
                     i--;
                     AddTargets();
-                    healthbarDow();      
-                    
+                    healthbarDow();
+
 
                     return CollisionType.Target;
                 }
@@ -273,10 +288,11 @@ namespace WeltraumSpiel
             }
             else if (punktabzug >= 600)
             {
-                ScreenManager.AddScreen(new  GameOverMenuScreen(), ControllingPlayer);
-
+                destroyed = true;
+                sefin.Stop();
+                ScreenManager.AddScreen(new GameOverMenuScreen(), ControllingPlayer);
             }
-            
+
         }
 
         #endregion
@@ -294,43 +310,75 @@ namespace WeltraumSpiel
             else
                 pauseAlpha = Math.Max(pauseAlpha - 1f / 32, 0);
 
-            if (sefin.State == SoundState.Stopped && sefin.IsLooped == false)
-            {
-                sefin.IsLooped = true;
-                sefin.Play();
-            }
+
 
             if (IsActive)
             {
-
-                float moveSpeed = gameTime.ElapsedGameTime.Milliseconds / 500.0f * gameSpeed;
-                MoveForward(ref xwingPosition, xwingRotation, moveSpeed);
-
-
-                BoundingSphere xwingSpere = new BoundingSphere(xwingPosition, 0.04f);
-                if (CheckCollision(xwingSpere) == CollisionType.Target)
+                if (!destroyed)
                 {
-                    if (gameSpeed > 1.0f)
+                    if (sefin.State == SoundState.Stopped && sefin.IsLooped == false)
                     {
-                        gameSpeed /= 1.1f;
-                        turnMod *= 1.1f;
+                        sefin.IsLooped = true;
+                        sefin.Play();
+                    }
+                    float moveSpeed = gameTime.ElapsedGameTime.Milliseconds / 500.0f * gameSpeed;
+                    MoveForward(ref xwingPosition, xwingRotation, moveSpeed);
+
+
+                    BoundingSphere xwingSpere = new BoundingSphere(xwingPosition, 0.04f);
+                    if (CheckCollision(xwingSpere) == CollisionType.Target)
+                    {
+                        if (gameSpeed > 1.0f)
+                        {
+                            gameSpeed /= 1.1f;
+                            turnMod *= 1.1f;
+                        }
+
+                        healthbarCon = 1;       //Dient als Kontrolle für die Methode healthbarDow()
+                        healthbarDow();
+                        targetExlposion.Play();
                     }
 
-                    healthbarCon = 1;       //Dient als Kontrolle für die Methode healthbarDow()
-                    healthbarDow();
+                    if (CheckCollision(xwingSpere) == CollisionType.Boundary)
+                    {
+                        xwingPosition = new Vector3(8, 1, -3);
+                        xwingRotation = Quaternion.Identity;
+                    }
+                    UpdateBulletPositions(gameTime, moveSpeed);
                 }
-                if (CheckCollision(xwingSpere) == CollisionType.Boundary)
-                {
-                    xwingPosition = new Vector3(8, 1, -3);
-                    xwingRotation = Quaternion.Identity;
-                }
-
-                UpdateCamera();
-                UpdateBulletPositions(gameTime, moveSpeed);
             }
+            if (destroyed)
+            {
+                double currentGameTime = gameTime.TotalGameTime.TotalMilliseconds;
+                Random random = new Random();
+                if (lastDestroyedTime == 0)
+                {
+                    shipWingLeftPos = xwingPosition;
+                    shipCenterPos = xwingPosition;
+                    shipWingRightPos = xwingPosition;
+                    shipExplosion.Play();
+                    lastDestroyedTime = currentGameTime;
+                }
+                if (currentGameTime - lastDestroyedTime > 10)
+                {
+                    float speed = 0.001f;
 
-            
+                    Vector3 addVector = Vector3.Transform(new Vector3(-1, 1, 1), xwingRotation);
+                    shipWingLeftPos += addVector * speed;
 
+                    addVector = Vector3.Transform(new Vector3(0, -1, 1), xwingRotation);
+                    shipCenterPos += addVector * speed;
+
+
+                    addVector = Vector3.Transform(new Vector3(1, 0, 1), xwingRotation);
+                    shipWingRightPos += addVector * speed;
+                }
+
+                leftWingRotation += 0.1f;
+                centerRotation += 0.1f;
+                rightWingRotation += 0.1f;
+            }
+            UpdateCamera();
         }
 
         private void UpdateBulletPositions(GameTime gameTime, float moveSpeed)
@@ -358,7 +406,7 @@ namespace WeltraumSpiel
 
                         if (colType == CollisionType.Target)
                             targetExlposion.Play();
-                            score += 50;
+                        score += 50;
                         if (gameSpeed < 5.0f)
                         {
                             turnMod /= 1.2f;
@@ -396,27 +444,31 @@ namespace WeltraumSpiel
         /// This is called when the game should draw itself.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        public override void Draw(GameTime gameTime) 
-        {     
+        public override void Draw(GameTime gameTime)
+        {
             DrawSkybox();
-            DrawModel();
             DrawTargets();
-            DrawBullets();
-            crosshair.Draw(spriteBatch);
+            if (!destroyed)
+            {
+                DrawModel();
+                DrawBullets();
+                crosshair.Draw(spriteBatch);
 
 
-            //Hier wird die Lebensleiste erzeugt
-            spriteBatch.Begin();
-            //Draw the health for the health bar
-            spriteBatch.Draw(mHealthBar, new Rectangle(ScreenManager.Game.Window.ClientBounds.Width / 2 - mHealthBar.Width / 2,
-                                                  30, mHealthBar.Width - punktabzug, 44), new Rectangle(0, 45, mHealthBar.Width, 44), Color.Red);
-            //Draw the box around the health bar
-            spriteBatch.Draw(mHealthBar, new Rectangle(ScreenManager.Game.Window.ClientBounds.Width / 2 - mHealthBar.Width / 2,
-                                                  30, mHealthBar.Width - punktabzug, 44), new Rectangle(0, 0, mHealthBar.Width, 44), Color.White);
-            spriteBatch.End();
-
-           gameti = gameTime;  //Wird benötigt um auf die Gametime in HandelInput zu zu greifen
-
+                //Hier wird die Lebensleiste erzeugt
+                spriteBatch.Begin();
+                //Draw the health for the health bar
+                spriteBatch.Draw(mHealthBar, new Rectangle(ScreenManager.Game.Window.ClientBounds.Width / 2 - mHealthBar.Width / 2,
+                                                      30, mHealthBar.Width - punktabzug, 44), new Rectangle(0, 45, mHealthBar.Width, 44), Color.Red);
+                //Draw the box around the health bar
+                spriteBatch.Draw(mHealthBar, new Rectangle(ScreenManager.Game.Window.ClientBounds.Width / 2 - mHealthBar.Width / 2,
+                                                      30, mHealthBar.Width - punktabzug, 44), new Rectangle(0, 0, mHealthBar.Width, 44), Color.White);
+                spriteBatch.End();
+            }
+            else
+            {
+                DrawDestroyedModel();
+            }
             // If the game is transitioning on or off, fade it out to black.
             if (TransitionPosition > 0 || pauseAlpha > 0)
             {
@@ -424,6 +476,7 @@ namespace WeltraumSpiel
 
                 ScreenManager.FadeBackBufferToBlack(alpha);
             }
+            gameti = gameTime;  //Wird benötigt um auf die Gametime in HandelInput zu zu greifen
         }
 
         private void DrawModel()
@@ -547,7 +600,66 @@ namespace WeltraumSpiel
             device.DepthStencilState = dss;
         }
 
-      
+        private void DrawDestroyedModel()
+        {
+            // Linker Ship-Wing zeichnen
+            int i = 0;
+            Matrix worldMatrix = Matrix.CreateScale(0.02f, 0.02f, 0.02f) * Matrix.CreateRotationY(MathHelper.Pi / 2) * Matrix.CreateRotationX(leftWingRotation) * Matrix.CreateFromQuaternion(xwingRotation) * Matrix.CreateTranslation(shipWingLeftPos);
+
+            Matrix[] modelTransforms = new Matrix[destroyedShip[i].Bones.Count];
+            destroyedShip[i].CopyAbsoluteBoneTransformsTo(modelTransforms);
+
+            foreach (ModelMesh mesh in destroyedShip[i].Meshes)
+            {
+                foreach (BasicEffect effect in mesh.Effects)
+                {
+                    effect.EnableDefaultLighting();  // Beleuchtung aktivieren
+                    effect.World = modelTransforms[mesh.ParentBone.Index] * worldMatrix;
+                    effect.View = viewMatrix;
+                    effect.Projection = projectionMatrix;
+                }
+                mesh.Draw();
+
+            }
+            // Ship-Center zeichnen
+            i++;
+            worldMatrix = Matrix.CreateScale(0.02f, 0.02f, 0.02f) * Matrix.CreateRotationY(MathHelper.Pi / 2) * Matrix.CreateRotationX(centerRotation) * Matrix.CreateFromQuaternion(xwingRotation) * Matrix.CreateTranslation(shipCenterPos);
+
+            modelTransforms = new Matrix[destroyedShip[i].Bones.Count];
+            destroyedShip[i].CopyAbsoluteBoneTransformsTo(modelTransforms);
+
+            foreach (ModelMesh mesh in destroyedShip[i].Meshes)
+            {
+                foreach (BasicEffect effect in mesh.Effects)
+                {
+                    effect.EnableDefaultLighting();  // Beleuchtung aktivieren
+                    effect.World = modelTransforms[mesh.ParentBone.Index] * worldMatrix;
+                    effect.View = viewMatrix;
+                    effect.Projection = projectionMatrix;
+                }
+                mesh.Draw();
+
+            }
+            // Rechter Ship-Wing zeichnen
+            i++;
+            worldMatrix = Matrix.CreateScale(0.02f, 0.02f, 0.02f) * Matrix.CreateRotationY(MathHelper.Pi / 2) * Matrix.CreateRotationX(rightWingRotation) * Matrix.CreateFromQuaternion(xwingRotation) * Matrix.CreateTranslation(shipWingRightPos);
+
+            modelTransforms = new Matrix[destroyedShip[i].Bones.Count];
+            destroyedShip[i].CopyAbsoluteBoneTransformsTo(modelTransforms);
+
+            foreach (ModelMesh mesh in destroyedShip[i].Meshes)
+            {
+                foreach (BasicEffect effect in mesh.Effects)
+                {
+                    effect.EnableDefaultLighting();  // Beleuchtung aktivieren
+                    effect.World = modelTransforms[mesh.ParentBone.Index] * worldMatrix;
+                    effect.View = viewMatrix;
+                    effect.Projection = projectionMatrix;
+                }
+                mesh.Draw();
+
+            }
+        }
 
         #endregion
 
@@ -574,7 +686,7 @@ namespace WeltraumSpiel
                 float leftRightRot = 0;
                 float leftRightRoll = 0;
                 float upDownRot = 0;
-                
+
                 float turningSpeed = (float)gameti.ElapsedGameTime.TotalMilliseconds / 1000.0f; //Test
                 turningSpeed *= 1.6f * gameSpeed;
                 KeyboardState keys = Keyboard.GetState();
@@ -609,9 +721,7 @@ namespace WeltraumSpiel
                         bulletList.Add(newBullet);
 
                         lastBulletTime = currentTime;
-                        SoundEffect sEffect;
-                        sEffect = Content.Load<SoundEffect>("Sounds/Weapon");
-                        sEffect.Play();
+                        weaponSound.Play();
                     }
                 }
             }
@@ -620,13 +730,13 @@ namespace WeltraumSpiel
         private void MoveForward(ref Vector3 position, Quaternion rotationQuat, float speed)
         {
             KeyboardState keys = Keyboard.GetState();
-            if(keys.IsKeyDown(Keys.LeftShift))
+            if (keys.IsKeyDown(Keys.LeftShift))
             {
                 Vector3 addVector = Vector3.Transform(new Vector3(0, 0, -1), rotationQuat);
-                position += addVector * speed*2;
+                position += addVector * speed * 2;
                 sefin.Volume = 1.0f;
             }
-            if(keys.IsKeyUp(Keys.LeftShift))
+            if (keys.IsKeyUp(Keys.LeftShift))
             {
                 Vector3 addVector = Vector3.Transform(new Vector3(0, 0, -1), rotationQuat);
                 position += addVector * speed;

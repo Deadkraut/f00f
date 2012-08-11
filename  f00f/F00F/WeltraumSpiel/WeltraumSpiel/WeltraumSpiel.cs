@@ -47,6 +47,16 @@
  * Außerdem einen Ordner HUD und 2 neue Klassen: Sprite und Crosshair.
  * Der Code der Klasse Sprite stammt aus dem Buch: XNA 4.0 Game Development by Example Beginner's Guide - Chapter 5 von Kurt Jaegers
  * 
+ * @version: 1.7
+ * @author: Marcel Abel
+ * Ich habe ein paar Sounds zu unserem Menu hinzugefügt.
+ * 
+ * @version: 1.8
+ * @author: Marcel Abel
+ * Ich habe einen "Explosions-Effect" eingefügt, wenn der Spieler "zerstört" und somit das Spiel beendet wird.
+ * Sobald kein Leben in der Lebensanzeige mehr vorhanden ist, wird der Jäger als zerstört gemeldet, eine Explosion wird abgespielt und er zerbricht in 3,
+ * sich langsam fortbewegende und rotierende Teile.
+ * 
  */
 
 #endregion
