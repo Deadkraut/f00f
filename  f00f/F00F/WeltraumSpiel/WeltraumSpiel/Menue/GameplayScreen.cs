@@ -480,10 +480,10 @@ namespace WeltraumSpiel
                 spriteBatch.Begin();
                 //Draw the health for the health bar
                 spriteBatch.Draw(mHealthBar, new Rectangle(ScreenManager.Game.Window.ClientBounds.Width / 2 - mHealthBar.Width / 2,
-                                                      30, mHealthBar.Width - punktabzug, 44), new Rectangle(0, 45, mHealthBar.Width, 44), Color.Red);
+                                                      500, mHealthBar.Width - punktabzug, 44), new Rectangle(0, 45, mHealthBar.Width, 44), Color.Red);
                 //Draw the box around the health bar
                 spriteBatch.Draw(mHealthBar, new Rectangle(ScreenManager.Game.Window.ClientBounds.Width / 2 - mHealthBar.Width / 2,
-                                                      30, mHealthBar.Width - punktabzug, 44), new Rectangle(0, 0, mHealthBar.Width, 44), Color.White);
+                                                      500, mHealthBar.Width - punktabzug, 44), new Rectangle(0, 0, mHealthBar.Width, 44), Color.White);
                 spriteBatch.End();
             }
             else
@@ -730,6 +730,8 @@ namespace WeltraumSpiel
                 float leftRightRoll = 0;
                 float upDownRot = 0;
 
+                
+
                 float turningSpeed = (float)gameti.ElapsedGameTime.TotalMilliseconds / 1000.0f; //Test
                 turningSpeed *= 1.6f * gameSpeed;
                 KeyboardState keys = Keyboard.GetState();
@@ -748,11 +750,29 @@ namespace WeltraumSpiel
                 if (keys.IsKeyDown(Keys.W) || keys.IsKeyDown(Keys.Up))
                     upDownRot -= turningSpeed * turnMod;
 
+                MouseState state = Mouse.GetState();
+                int x = 0;
+                int y = 0;
+                Mouse.SetPosition(x,y);//Hier wird die Maus Position auf x=0 und y= 0 gesetzt
+                int mausX = state.X;
+                int mausY = state.Y;
+                //Hier wird geprüft ob die Maus bewegt wurde
+                if (mausX != x)
+                {
+                    mousePlay(mausX, mausY);
+                }
+                else if (mausY != y)
+                {
+                    mousePlay(mausX, mausY);
+                }
+
+                    
+
+               
                 Quaternion additionalRot = Quaternion.CreateFromAxisAngle(new Vector3(0, 0, -1), leftRightRoll) * Quaternion.CreateFromAxisAngle(new Vector3(1, 0, 0), upDownRot) * Quaternion.CreateFromAxisAngle(new Vector3(0, -1, 0), leftRightRot);
                 xwingRotation *= additionalRot;
-                MouseState state = Mouse.GetState();
-
-                if (state.LeftButton == ButtonState.Pressed || keys.IsKeyDown(Keys.Space))
+               
+             if (state.LeftButton == ButtonState.Pressed || keys.IsKeyDown(Keys.Space))
                 {
                     double currentTime = gameti.TotalGameTime.TotalMilliseconds;    //
                     if (currentTime - lastBulletTime > 150)
@@ -773,7 +793,8 @@ namespace WeltraumSpiel
         private void MoveForward(ref Vector3 position, Quaternion rotationQuat, float speed)
         {
             KeyboardState keys = Keyboard.GetState();
-            if (keys.IsKeyDown(Keys.LeftShift))
+            MouseState state = Mouse.GetState();
+            if (keys.IsKeyDown(Keys.LeftShift) || state.RightButton == ButtonState.Pressed)
             {
                 Vector3 addVector = Vector3.Transform(new Vector3(0, 0, -1), rotationQuat);
                 position += addVector * speed * 2;
@@ -786,6 +807,45 @@ namespace WeltraumSpiel
                 sefin.Volume = 0.5f;
             }
         }
+
+        //Dies Methode wird benötigt um denn X-Wing mit der Maus zu steuern
+
+        private void mousePlay(int xx, int yy)
+        {
+            float leftRightRot = 0;
+            float leftRightRoll = 0;
+            float upDownRot = 0;
+
+            float turningSpeed = (float)gameti.ElapsedGameTime.TotalMilliseconds / 1000.0f; //Test
+            turningSpeed *= 1.2f * gameSpeed;
+
+            //Hier fliegt der Xwing nach Rechts
+            if (xx > 0)
+            {
+                leftRightRot += turningSpeed * turnMod;
+            }
+            //Hier fliegt der Xwing nach Links
+            if (xx < 0)
+            {
+                leftRightRot -= turningSpeed * turnMod;
+            }
+
+            //Hier fliegt der Xwing nach unten
+            if (yy > 0)
+            {
+                upDownRot += turningSpeed * turnMod;
+            }
+            //Hier fliegt der Xwing nach Oben
+            if (yy < 0)
+            {
+                upDownRot -= turningSpeed * turnMod;
+            }
+
+
+            Quaternion additionalRot = Quaternion.CreateFromAxisAngle(new Vector3(0, 0, -1), leftRightRoll) * Quaternion.CreateFromAxisAngle(new Vector3(1, 0, 0), upDownRot) * Quaternion.CreateFromAxisAngle(new Vector3(0, -1, 0), leftRightRot);
+            xwingRotation *= additionalRot;
+        }
+
 
         #endregion
     }
