@@ -102,6 +102,7 @@ namespace WeltraumSpiel
         GameTime gameti;    // Wird benötigt um an die Spielzeit für die Handelinput zu kommen
 
         HUD.Crosshair crosshair;
+        HUD.Score hudScore;
 
         Texture2D mHealthBar;
         Texture2D chTexture;
@@ -120,6 +121,10 @@ namespace WeltraumSpiel
         Vector3 shipWingLeftPos;
         Vector3 shipCenterPos;
         Vector3 shipWingRightPos;
+        Vector2 scorePosition = new Vector2(40,40);
+        String scoreText = "Score";
+        Color textColor = new Color(0, 0, 0, 127);
+
 
         #endregion
 
@@ -156,6 +161,7 @@ namespace WeltraumSpiel
             chTexture = Content.Load<Texture2D>(@"Textures\crosshair");
             Rectangle newRectangle = new Rectangle(0, 0, 50, 50);
             crosshair = new HUD.Crosshair(chTexture, newRectangle, 4, ScreenManager.Game.Window.ClientBounds.Width, ScreenManager.Game.Window.ClientBounds.Height);
+            hudScore = new HUD.Score(scoreText, scorePosition, spriteBatch, gameFont, device);
 
             AddBoundaryBox();
             AddTargets();
@@ -168,6 +174,11 @@ namespace WeltraumSpiel
             targetExlposion = Content.Load<SoundEffect>(@"Sounds\TargetExpl");
 
             weaponSound = Content.Load<SoundEffect>(@"Sounds\Weapon");
+
+            SpriteFont spriteFont = Content.Load<SpriteFont>(@"Fonts\gamefont");
+            //spriteBatch.DrawString(spriteFont, scoreText + ": " + score, scorePosition, textColor);
+            string scoreLabelText = "Score: ";
+            hudScore = new HUD.Score(scoreLabelText, scorePosition, spriteBatch, gameFont, device);
         }
 
         /// <summary>
@@ -345,6 +356,7 @@ namespace WeltraumSpiel
                         xwingRotation = Quaternion.Identity;
                     }
                     UpdateBulletPositions(gameTime, moveSpeed);
+                    UpdateScore();
                 }
             }
             if (destroyed)
@@ -417,6 +429,13 @@ namespace WeltraumSpiel
             }
         }
 
+        private void UpdateScore()
+        {
+            Color color = Color.White;
+            string scoreText = score.ToString();
+            hudScore.Update(scoreText, color);
+        }
+
         private void UpdateCamera()
         {
 
@@ -448,11 +467,13 @@ namespace WeltraumSpiel
         {
             DrawSkybox();
             DrawTargets();
+            hudScore.Draw();
             if (!destroyed)
             {
                 DrawModel();
                 DrawBullets();
                 crosshair.Draw(spriteBatch);
+                hudScore.Draw();
 
 
                 //Hier wird die Lebensleiste erzeugt
@@ -675,6 +696,12 @@ namespace WeltraumSpiel
                 mesh.Draw();
 
             }
+        }
+
+
+        private void drawScore()
+        {
+ 
         }
 
         #endregion

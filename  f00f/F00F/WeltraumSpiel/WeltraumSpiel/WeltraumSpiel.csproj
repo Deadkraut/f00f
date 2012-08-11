@@ -107,6 +107,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HUD\Score.cs" />
     <Compile Include="HUD\Crosshair.cs" />
     <Compile Include="HUD\Sprite.cs" />
     <Compile Include="MenueManager\GameScreen.cs" />

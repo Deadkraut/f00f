@@ -57,6 +57,12 @@
  * Sobald kein Leben in der Lebensanzeige mehr vorhanden ist, wird der Jäger als zerstört gemeldet, eine Explosion wird abgespielt und er zerbricht in 3,
  * sich langsam fortbewegende und rotierende Teile.
  * 
+ * @version: 1.9
+ * @author: Mikael Wolff
+ * Ich habe das Zielmodell durch ein eigenes ausgetauscht, zudem wurde im HUD eine Punkteanzeige eingebaut, die mit den
+ * zerstörten zielen hochzählt. Zudem wurde die Geschwindigkeitssteigerung durch Abschüsse neu eingegrenzt und die Steuerung auf die
+ * Geschwindigkeitserhöhung hin angepasst.
+ * 
  */
 
 #endregion
