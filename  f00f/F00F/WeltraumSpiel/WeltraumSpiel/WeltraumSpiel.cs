@@ -62,6 +62,7 @@
  * Ich habe das Zielmodell durch ein eigenes ausgetauscht, zudem wurde im HUD eine Punkteanzeige eingebaut, die mit den
  * zerstörten zielen hochzählt. Zudem wurde die Geschwindigkeitssteigerung durch Abschüsse neu eingegrenzt und die Steuerung auf die
  * Geschwindigkeitserhöhung hin angepasst.
+ * Austausch des Zielmodelles durch ein eigenes Asteroidenmodell.
  * 
  */
 
