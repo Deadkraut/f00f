@@ -139,7 +139,7 @@ namespace WeltraumSpiel
 
             effect = Content.Load<Effect>(@"Effects\effects");
             ship = Content.Load<Model>(@"Models\JaegerMK1");
-            targetModel = LoadModel(@"Models\target");
+            targetModel = Content.Load<Model>(@"Models\Asteroid");
             destroyedShip = new Model[] { Content.Load<Model>(@"Models\JaegerWingLeft"), Content.Load<Model>(@"Models\JaegerCenter"), Content.Load<Model>(@"Models\JaegerWingRight") };
 
             // Create a new SpriteBatch, which can be used to draw textures.
@@ -507,22 +507,38 @@ namespace WeltraumSpiel
             {
                 Matrix worldMatrix = Matrix.CreateScale(targetList[i].Radius) * Matrix.CreateTranslation(targetList[i].Center);
 
-                Matrix[] targetTransforms = new Matrix[targetModel.Bones.Count];
-                targetModel.CopyAbsoluteBoneTransformsTo(targetTransforms);
-                foreach (ModelMesh modmesh in targetModel.Meshes)
+                //Matrix[] targetTransforms = new Matrix[targetModel.Bones.Count];
+                //targetModel.CopyAbsoluteBoneTransformsTo(targetTransforms);
+                //foreach (ModelMesh modmesh in targetModel.Meshes)
+                //{
+                //    foreach (Effect currentEffect in modmesh.Effects)
+                //    {
+                //        currentEffect.CurrentTechnique = currentEffect.Techniques["Colored"];
+                //        currentEffect.Parameters["xWorld"].SetValue(targetTransforms[modmesh.ParentBone.Index] * worldMatrix);
+                //        currentEffect.Parameters["xView"].SetValue(viewMatrix);
+                //        currentEffect.Parameters["xProjection"].SetValue(projectionMatrix);
+                //        currentEffect.Parameters["xEnableLighting"].SetValue(true);
+                //        currentEffect.Parameters["xLightDirection"].SetValue(lightDirection);
+                //        currentEffect.Parameters["xAmbient"].SetValue(0.5f);
+                //    }
+                //    modmesh.Draw();
+                //}
+                Matrix[] modelTransforms = new Matrix[targetModel.Bones.Count];
+                targetModel.CopyAbsoluteBoneTransformsTo(modelTransforms);
+
+                foreach (ModelMesh mesh in targetModel.Meshes)
                 {
-                    foreach (Effect currentEffect in modmesh.Effects)
+                    foreach (BasicEffect effect in mesh.Effects)
                     {
-                        currentEffect.CurrentTechnique = currentEffect.Techniques["Colored"];
-                        currentEffect.Parameters["xWorld"].SetValue(targetTransforms[modmesh.ParentBone.Index] * worldMatrix);
-                        currentEffect.Parameters["xView"].SetValue(viewMatrix);
-                        currentEffect.Parameters["xProjection"].SetValue(projectionMatrix);
-                        currentEffect.Parameters["xEnableLighting"].SetValue(true);
-                        currentEffect.Parameters["xLightDirection"].SetValue(lightDirection);
-                        currentEffect.Parameters["xAmbient"].SetValue(0.5f);
+                        effect.EnableDefaultLighting();  // Beleuchtung aktivieren
+                        effect.World = modelTransforms[mesh.ParentBone.Index] * worldMatrix;
+                        effect.View = viewMatrix;
+                        effect.Projection = projectionMatrix;
                     }
-                    modmesh.Draw();
+                    mesh.Draw();
+
                 }
+
             }
         }
 
