@@ -8,8 +8,8 @@
  */
 #endregion
 #region Using Statements
-using Microsoft.Xna.Framework;
 using WeltraumSpiel.MenueManager; // Dient dazu das MenuEntry hier auch geladen wird
+using Microsoft.Xna.Framework;
 #endregion
 namespace WeltraumSpiel
 {
@@ -41,7 +41,6 @@ namespace WeltraumSpiel
         #endregion
 
         #region Initialization
-
 
         /// <summary>
         /// Constructor.
@@ -77,7 +76,6 @@ namespace WeltraumSpiel
             MenuEntries.Add(back);
         }
 
-
         /// <summary>
         /// Fills in the latest values for the options screen menu text.
         /// </summary>
@@ -88,7 +86,6 @@ namespace WeltraumSpiel
             frobnicateMenuEntry.Text = "Fullscreen: " + (frobnicate ? "off": "on");
             elfMenuEntry.Text = "elf: " + elf;
         }
-
 
         #endregion
 
@@ -105,7 +102,6 @@ namespace WeltraumSpiel
             SetMenuEntryText();
         }
 
-
         /// <summary>
         /// Event handler for when the Language menu entry is selected.
         /// </summary>
@@ -114,7 +110,6 @@ namespace WeltraumSpiel
             currentLanguage = (currentLanguage + 1) % languages.Length;
             SetMenuEntryText();
         }
-
 
         /// <summary>
         /// Event handler for when the Frobnicate menu entry is selected.
@@ -125,7 +120,6 @@ namespace WeltraumSpiel
             SetMenuEntryText();
         }
 
-
         /// <summary>
         /// Event handler for when the Elf menu entry is selected.
         /// </summary>
@@ -135,7 +129,6 @@ namespace WeltraumSpiel
 
             SetMenuEntryText();
         }
-
 
         #endregion
     }

@@ -24,6 +24,7 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using WeltraumSpiel.HUD;
 #endregion
 
 namespace WeltraumSpiel
@@ -52,9 +53,7 @@ namespace WeltraumSpiel
 
         const int maxTargets = 500;
         const float dimension = 500; // Dimension der BoundaryBox
-        private float turnMod = 0.75f;
-        public int score = 0;
-
+        
         #endregion
 
         #region Fields
@@ -65,14 +64,12 @@ namespace WeltraumSpiel
         Model targetModel;
         Model ship;
 
-
         Texture2D[] skyboxTextures;
-
-        bool destroyed;
 
         int healthbarCon = 0; // Wird benötigt um die healthbar zu kontrolieren
         int punktabzug;
         float gameSpeed = 1.0f;
+        private float turnMod = 0.75f;
 
         List<BoundingSphere> targetList = new List<BoundingSphere>(); Texture2D bulletTexture;
 
@@ -95,15 +92,12 @@ namespace WeltraumSpiel
         SpriteFont gameFont;    //Schauen ob benötigt
         float pauseAlpha;
 
-
-
         SpriteBatch spriteBatch; //Ermöglicht das Zeichnen einer Gruppe von Sprites mithilfe derselben Einstellungen. 
         GraphicsDevice device;
         GameTime gameti;    // Wird benötigt um an die Spielzeit für die Handelinput zu kommen
 
-        HUD.Crosshair crosshair;
-        HUD.Score hudScore;
-
+        Crosshair crosshair;
+        
         Texture2D mHealthBar;
         Texture2D chTexture;
 
@@ -118,13 +112,23 @@ namespace WeltraumSpiel
         float centerRotation = 1.0f;
         float rightWingRotation = 1.0f;
         double lastDestroyedTime = 0;
+        bool destroyed;
         Vector3 shipWingLeftPos;
         Vector3 shipCenterPos;
         Vector3 shipWingRightPos;
+
+        Text hudScore;
+        int score = 0;
         Vector2 scorePosition = new Vector2(40,40);
-        String scoreText = "Score";
         Color textColor = new Color(0, 0, 0, 127);
 
+        Text targetsEliminated;
+        int countTargetsEl = 0;
+        Vector2 targetsEliminatedPos = new Vector2(40, 100);
+
+        Text bulletsFired;
+        int countBullets = 0;
+        Vector2 bulletsFiredPos = new Vector2(40, 160);
 
         #endregion
 
@@ -142,32 +146,46 @@ namespace WeltraumSpiel
             if (Content == null)
                 Content = new ContentManager(ScreenManager.Game.Services, "Content");
 
+            device = ScreenManager.GraphicsDevice;
+
+            // Create a new SpriteBatch, which can be used to draw textures.
+            spriteBatch = new SpriteBatch(device);
+
+            #region Load Effects
+
             effect = Content.Load<Effect>(@"Effects\effects");
+
+            #endregion
+
+            #region Load Models
+
             ship = Content.Load<Model>(@"Models\JaegerMK1");
             targetModel = Content.Load<Model>(@"Models\Asteroid");
             destroyedShip = new Model[] { Content.Load<Model>(@"Models\JaegerWingLeft"), Content.Load<Model>(@"Models\JaegerCenter"), Content.Load<Model>(@"Models\JaegerWingRight") };
+            skyboxModel = LoadModel(@"Models\Skybox\skybox", out skyboxTextures);
 
-            // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(ScreenManager.GraphicsDevice);
+            #endregion
+
+            #region Load Textures
+
             mHealthBar = Content.Load<Texture2D>(@"Textures\healthBar") as Texture2D;
 
-            device = ScreenManager.GraphicsDevice;
-
             bulletTexture = Content.Load<Texture2D>(@"Textures\bullet1");
-            skyboxModel = LoadModel(@"Models\Skybox\skybox", out skyboxTextures);
+            chTexture = Content.Load<Texture2D>(@"Textures\crosshair");
+
+
+            #endregion
+
+            #region Load Fonts
 
             gameFont = Content.Load<SpriteFont>(@"Fonts\gamefont");
 
-            chTexture = Content.Load<Texture2D>(@"Textures\crosshair");
-            Rectangle newRectangle = new Rectangle(0, 0, 50, 50);
-            crosshair = new HUD.Crosshair(chTexture, newRectangle, 4, ScreenManager.Game.Window.ClientBounds.Width, ScreenManager.Game.Window.ClientBounds.Height);
-            hudScore = new HUD.Score(scoreText, scorePosition, spriteBatch, gameFont, device);
-
-            AddBoundaryBox();
-            AddTargets();
+            #endregion
+            
+            #region Load Sounds
 
             engineSound = Content.Load<SoundEffect>(@"Sounds\EngineLoop");
-            sefin = engineSound.CreateInstance();
+
 
             shipExplosion = Content.Load<SoundEffect>(@"Sounds\ShipExpl");
 
@@ -175,10 +193,27 @@ namespace WeltraumSpiel
 
             weaponSound = Content.Load<SoundEffect>(@"Sounds\Weapon");
 
-            SpriteFont spriteFont = Content.Load<SpriteFont>(@"Fonts\gamefont");
-            //spriteBatch.DrawString(spriteFont, scoreText + ": " + score, scorePosition, textColor);
-            string scoreLabelText = "Score: ";
-            hudScore = new HUD.Score(scoreLabelText, scorePosition, spriteBatch, gameFont, device);
+            #endregion
+
+            Rectangle newRectangle = new Rectangle(0, 0, 50, 50);
+            crosshair = new Crosshair(chTexture, newRectangle, 4, ScreenManager.Game.Window.ClientBounds.Width, ScreenManager.Game.Window.ClientBounds.Height);
+
+            string scoreLabelText = "Score";
+            hudScore = new Text(scoreLabelText, scorePosition, spriteBatch, gameFont, device);
+
+            string targetsElLabelText = "Targets eliminated";
+            targetsEliminated = new Text(targetsElLabelText, targetsEliminatedPos, spriteBatch, gameFont, device);
+            targetsEliminated.TextEnabled = false;
+
+            string bulletsFiLabelText = "Bullets fired";
+            bulletsFired = new Text(bulletsFiLabelText, bulletsFiredPos, spriteBatch, gameFont, device);
+            bulletsFired.TextEnabled = false;
+
+            AddBoundaryBox();
+            AddTargets();
+
+            // Neue SoundEffect-Instanz initialisieren
+            sefin = engineSound.CreateInstance();
         }
 
         /// <summary>
@@ -277,7 +312,7 @@ namespace WeltraumSpiel
                     i--;
                     AddTargets();
                     healthbarDow();
-
+                    countTargetsEl++;
 
                     return CollisionType.Target;
                 }
@@ -321,8 +356,6 @@ namespace WeltraumSpiel
             else
                 pauseAlpha = Math.Max(pauseAlpha - 1f / 32, 0);
 
-
-
             if (IsActive)
             {
                 if (!destroyed)
@@ -334,7 +367,6 @@ namespace WeltraumSpiel
                     }
                     float moveSpeed = gameTime.ElapsedGameTime.Milliseconds / 500.0f * gameSpeed;
                     MoveForward(ref xwingPosition, xwingRotation, moveSpeed);
-
 
                     BoundingSphere xwingSpere = new BoundingSphere(xwingPosition, 0.04f);
                     if (CheckCollision(xwingSpere) == CollisionType.Target)
@@ -357,6 +389,8 @@ namespace WeltraumSpiel
                     }
                     UpdateBulletPositions(gameTime, moveSpeed);
                     UpdateScore();
+                    UpdateTargetsEliminated();
+                    UpdateBulletsFired();
                 }
             }
             if (destroyed)
@@ -370,6 +404,8 @@ namespace WeltraumSpiel
                     shipWingRightPos = xwingPosition;
                     shipExplosion.Play();
                     lastDestroyedTime = currentGameTime;
+                    targetsEliminated.TextEnabled = true;
+                    bulletsFired.TextEnabled = true;
                 }
                 if (currentGameTime - lastDestroyedTime > 10)
                 {
@@ -417,8 +453,10 @@ namespace WeltraumSpiel
                         i--;
 
                         if (colType == CollisionType.Target)
+                        {
                             targetExlposion.Play();
-                        score += 50;
+                            score += 50;
+                        }
                         if (gameSpeed < 5.0f)
                         {
                             turnMod /= 1.2f;
@@ -434,6 +472,20 @@ namespace WeltraumSpiel
             Color color = Color.White;
             string scoreText = score.ToString();
             hudScore.Update(scoreText, color);
+        }
+
+        private void UpdateBulletsFired()
+        {
+            Color color = Color.White;
+            string bulletsFiText = countBullets.ToString();
+            bulletsFired.Update(bulletsFiText, color);
+        }
+
+        private void UpdateTargetsEliminated()
+        {
+            Color color = Color.White;
+            string targetsElText = countTargetsEl.ToString();
+            targetsEliminated.Update(targetsElText, color);
         }
 
         private void UpdateCamera()
@@ -475,7 +527,6 @@ namespace WeltraumSpiel
                 crosshair.Draw(spriteBatch);
                 hudScore.Draw();
 
-
                 //Hier wird die Lebensleiste erzeugt
                 spriteBatch.Begin();
                 //Draw the health for the health bar
@@ -489,6 +540,8 @@ namespace WeltraumSpiel
             else
             {
                 DrawDestroyedModel();
+                targetsEliminated.Draw();
+                bulletsFired.Draw();
             }
             // If the game is transitioning on or off, fade it out to black.
             if (TransitionPosition > 0 || pauseAlpha > 0)
@@ -528,22 +581,6 @@ namespace WeltraumSpiel
             {
                 Matrix worldMatrix = Matrix.CreateScale(targetList[i].Radius) * Matrix.CreateTranslation(targetList[i].Center);
 
-                //Matrix[] targetTransforms = new Matrix[targetModel.Bones.Count];
-                //targetModel.CopyAbsoluteBoneTransformsTo(targetTransforms);
-                //foreach (ModelMesh modmesh in targetModel.Meshes)
-                //{
-                //    foreach (Effect currentEffect in modmesh.Effects)
-                //    {
-                //        currentEffect.CurrentTechnique = currentEffect.Techniques["Colored"];
-                //        currentEffect.Parameters["xWorld"].SetValue(targetTransforms[modmesh.ParentBone.Index] * worldMatrix);
-                //        currentEffect.Parameters["xView"].SetValue(viewMatrix);
-                //        currentEffect.Parameters["xProjection"].SetValue(projectionMatrix);
-                //        currentEffect.Parameters["xEnableLighting"].SetValue(true);
-                //        currentEffect.Parameters["xLightDirection"].SetValue(lightDirection);
-                //        currentEffect.Parameters["xAmbient"].SetValue(0.5f);
-                //    }
-                //    modmesh.Draw();
-                //}
                 Matrix[] modelTransforms = new Matrix[targetModel.Bones.Count];
                 targetModel.CopyAbsoluteBoneTransformsTo(modelTransforms);
 
@@ -698,12 +735,6 @@ namespace WeltraumSpiel
             }
         }
 
-
-        private void drawScore()
-        {
- 
-        }
-
         #endregion
 
         #region Handle Input
@@ -729,8 +760,6 @@ namespace WeltraumSpiel
                 float leftRightRot = 0;
                 float leftRightRoll = 0;
                 float upDownRot = 0;
-
-                
 
                 float turningSpeed = (float)gameti.ElapsedGameTime.TotalMilliseconds / 1000.0f; //Test
                 turningSpeed *= 1.6f * gameSpeed;
@@ -766,13 +795,10 @@ namespace WeltraumSpiel
                     mousePlay(mausX, mausY);
                 }
 
-                    
-
-               
                 Quaternion additionalRot = Quaternion.CreateFromAxisAngle(new Vector3(0, 0, -1), leftRightRoll) * Quaternion.CreateFromAxisAngle(new Vector3(1, 0, 0), upDownRot) * Quaternion.CreateFromAxisAngle(new Vector3(0, -1, 0), leftRightRot);
                 xwingRotation *= additionalRot;
                
-             if (state.LeftButton == ButtonState.Pressed || keys.IsKeyDown(Keys.Space))
+                if (state.LeftButton == ButtonState.Pressed || keys.IsKeyDown(Keys.Space))
                 {
                     double currentTime = gameti.TotalGameTime.TotalMilliseconds;    //
                     if (currentTime - lastBulletTime > 150)
@@ -784,6 +810,7 @@ namespace WeltraumSpiel
                         bulletList.Add(newBullet);
 
                         lastBulletTime = currentTime;
+                        countBullets++;
                         weaponSound.Play();
                     }
                 }
@@ -809,7 +836,6 @@ namespace WeltraumSpiel
         }
 
         //Dies Methode wird benötigt um denn X-Wing mit der Maus zu steuern
-
         private void mousePlay(int xx, int yy)
         {
             float leftRightRot = 0;
@@ -845,7 +871,6 @@ namespace WeltraumSpiel
             Quaternion additionalRot = Quaternion.CreateFromAxisAngle(new Vector3(0, 0, -1), leftRightRoll) * Quaternion.CreateFromAxisAngle(new Vector3(1, 0, 0), upDownRot) * Quaternion.CreateFromAxisAngle(new Vector3(0, -1, 0), leftRightRot);
             xwingRotation *= additionalRot;
         }
-
 
         #endregion
     }

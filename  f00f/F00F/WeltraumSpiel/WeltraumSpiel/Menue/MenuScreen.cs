@@ -31,6 +31,7 @@ namespace WeltraumSpiel
         List<MenuEntry> menuEntries = new List<MenuEntry>();
         int selectedEntry = 0;
         string menuTitle;
+        private Texture2D keyboardMouse;
         SoundEffect menuButtonHover;
         SoundEffect menuButtonPress;
         //SoundEffect menuTitleSound;
@@ -50,6 +51,11 @@ namespace WeltraumSpiel
             get { return menuEntries; }
         }
 
+        public Texture2D KeyboardMouseTexture
+        {
+            get { return keyboardMouse; }
+        }
+        
 
         #endregion
 
@@ -76,6 +82,7 @@ namespace WeltraumSpiel
             menuButtonPress = ScreenManager.Game.Content.Load<SoundEffect>(@"Sounds\ButtonPress");
             //menuTitleSound = ScreenManager.Game.Content.Load<SoundEffect>(@"Sounds\MenuTitle");
             //sefin = menuTitleSound.CreateInstance();
+            keyboardMouse = ScreenManager.Game.Content.Load<Texture2D>(@"Textures\keys");
         }
 
         #endregion
@@ -263,7 +270,16 @@ namespace WeltraumSpiel
                                    titleOrigin, titleScale, SpriteEffects.None, 0);
 
             spriteBatch.End();
+
+            DrawOtherComponents();
         }
+
+
+        public virtual void DrawOtherComponents()
+        {
+        }
+        
+
 
 
         #endregion
