@@ -769,10 +769,7 @@ namespace WeltraumSpiel
                 if (keys.IsKeyDown(Keys.A) || keys.IsKeyDown(Keys.Left))
                     leftRightRot -= turningSpeed * turnMod;
 
-                if (keys.IsKeyDown(Keys.Q))
-                    leftRightRoll -= turningSpeed * turnMod * 1.5f;
-                if (keys.IsKeyDown(Keys.E))
-                    leftRightRoll += turningSpeed * turnMod * 1.5f;
+              
 
                 if (keys.IsKeyDown(Keys.S) || keys.IsKeyDown(Keys.Down))
                     upDownRot += turningSpeed * turnMod;
@@ -786,14 +783,14 @@ namespace WeltraumSpiel
                 int mausX = state.X;
                 int mausY = state.Y;
                 //Hier wird geprüft ob die Maus bewegt wurde
-                if (mausX != x)
+                if (mausX != x || mausY != y )
                 {
-                    mousePlay(mausX, mausY);
+                    mousePlay(mausX, mausY, leftRightRot, leftRightRoll, upDownRot, turningSpeed);
                 }
-                else if (mausY != y)
-                {
-                    mousePlay(mausX, mausY);
-                }
+                  if (keys.IsKeyDown(Keys.Q) || state.XButton1 == ButtonState.Pressed)
+                    leftRightRoll -= turningSpeed * turnMod * 1.5f;
+                  if (keys.IsKeyDown(Keys.E) || state.XButton2 == ButtonState.Pressed)
+                    leftRightRoll += turningSpeed * turnMod * 1.5f;
 
                 Quaternion additionalRot = Quaternion.CreateFromAxisAngle(new Vector3(0, 0, -1), leftRightRoll) * Quaternion.CreateFromAxisAngle(new Vector3(1, 0, 0), upDownRot) * Quaternion.CreateFromAxisAngle(new Vector3(0, -1, 0), leftRightRot);
                 xwingRotation *= additionalRot;
@@ -836,14 +833,14 @@ namespace WeltraumSpiel
         }
 
         //Dies Methode wird benötigt um denn X-Wing mit der Maus zu steuern
-        private void mousePlay(int xx, int yy)
+        private void mousePlay(int xx, int yy, float leftRightRot, float leftRightRoll, float upDownRot, float turningSpeed)
         {
-            float leftRightRot = 0;
-            float leftRightRoll = 0;
-            float upDownRot = 0;
+            //float leftRightRot = 0;
+            //float leftRightRoll = 0;
+            //float upDownRot = 0;
 
-            float turningSpeed = (float)gameti.ElapsedGameTime.TotalMilliseconds / 1000.0f; //Test
-            turningSpeed *= 1.2f * gameSpeed;
+            //float turningSpeed = (float)gameti.ElapsedGameTime.TotalMilliseconds / 1000.0f; //Test
+            //turningSpeed *= 1.2f * gameSpeed;
 
             //Hier fliegt der Xwing nach Rechts
             if (xx > 0)

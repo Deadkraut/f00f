@@ -21,6 +21,7 @@ namespace WeltraumSpiel
         MenuEntry languageMenuEntry;
         MenuEntry frobnicateMenuEntry;
         MenuEntry elfMenuEntry;
+        string auswahl = "off";
 
         enum Ungulate
         {
@@ -59,8 +60,7 @@ namespace WeltraumSpiel
 
             MenuEntry back = new MenuEntry("Zurueck");
 
-            string auswahl = "off";
-
+           
             // Hook up menu event handlers.
             ungulateMenuEntry.Selected += UngulateMenuEntrySelected;
             languageMenuEntry.Selected += LanguageMenuEntrySelected;
