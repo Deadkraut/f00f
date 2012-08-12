@@ -753,7 +753,7 @@ namespace WeltraumSpiel
                 MouseState state = Mouse.GetState();
                 int x = 0;
                 int y = 0;
-                Mouse.SetPosition(x,y);//Hier wird die Maus Position auf x=0 und y= 0 gesetzt
+                Mouse.SetPosition(x, y);//Hier wird die Maus Position auf x=0 und y= 0 gesetzt
                 int mausX = state.X;
                 int mausY = state.Y;
                 //Hier wird geprüft ob die Maus bewegt wurde
