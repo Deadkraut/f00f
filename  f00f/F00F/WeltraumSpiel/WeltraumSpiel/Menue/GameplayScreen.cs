@@ -118,16 +118,16 @@ namespace WeltraumSpiel
         Vector3 shipWingRightPos;
 
         Text hudScore;
-        int score = 0;
+        long score = 0;
         Vector2 scorePosition = new Vector2(40,40);
         Color textColor = new Color(0, 0, 0, 127);
 
         Text targetsEliminated;
-        int countTargetsEl = 0;
+        long countTargetsEl = 0;
         Vector2 targetsEliminatedPos = new Vector2(40, 100);
 
         Text bulletsFired;
-        int countBullets = 0;
+        long countBullets = 0;
         Vector2 bulletsFiredPos = new Vector2(40, 160);
 
         #endregion
@@ -530,10 +530,10 @@ namespace WeltraumSpiel
                 spriteBatch.Begin();
                 //Draw the health for the health bar
                 spriteBatch.Draw(mHealthBar, new Rectangle(ScreenManager.Game.Window.ClientBounds.Width / 2 - mHealthBar.Width / 2,
-                                                      500, mHealthBar.Width - punktabzug, 44), new Rectangle(0, 45, mHealthBar.Width, 44), Color.Red);
+                                                      700, mHealthBar.Width - punktabzug, 44), new Rectangle(0, 45, mHealthBar.Width, 44), Color.Red);
                 //Draw the box around the health bar
                 spriteBatch.Draw(mHealthBar, new Rectangle(ScreenManager.Game.Window.ClientBounds.Width / 2 - mHealthBar.Width / 2,
-                                                      500, mHealthBar.Width - punktabzug, 44), new Rectangle(0, 0, mHealthBar.Width, 44), Color.White);
+                                                      700, mHealthBar.Width - punktabzug, 44), new Rectangle(0, 0, mHealthBar.Width, 44), Color.White);
                 spriteBatch.End();
             }
             else
