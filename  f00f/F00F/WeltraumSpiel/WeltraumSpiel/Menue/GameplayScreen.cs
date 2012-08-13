@@ -519,7 +519,6 @@ namespace WeltraumSpiel
         {
             DrawSkybox();
             DrawTargets();
-            hudScore.Draw();
             if (!destroyed)
             {
                 DrawModel();
@@ -542,6 +541,7 @@ namespace WeltraumSpiel
                 DrawDestroyedModel();
                 targetsEliminated.Draw();
                 bulletsFired.Draw();
+                hudScore.Draw();
             }
             // If the game is transitioning on or off, fade it out to black.
             if (TransitionPosition > 0 || pauseAlpha > 0)
@@ -551,6 +551,7 @@ namespace WeltraumSpiel
                 ScreenManager.FadeBackBufferToBlack(alpha);
             }
             gameti = gameTime;  //Wird benötigt um auf die Gametime in HandelInput zu zu greifen
+            
         }
 
         private void DrawModel()
