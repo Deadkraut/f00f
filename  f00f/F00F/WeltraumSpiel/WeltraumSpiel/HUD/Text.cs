@@ -1,4 +1,14 @@
-﻿#region Using Statements
+﻿#region ::::Changelog::::
+/*
+ * Text.cs
+ * Diese Klasse bietet die Grundlage um einen Text im HUD des Spiels
+ * anzuzeigen.
+ * Verwendung des Codes von: 
+ * http://en.wikibooks.org/wiki/Game_Creation_with_XNA/2D_Development/Heads-Up-Display
+ */
+#endregion
+
+#region Using Statements
 
 using System;
 using System.Collections.Generic;
